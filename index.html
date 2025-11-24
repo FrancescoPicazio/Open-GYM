@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Schede Allenamento — UI migliorata</title>
+
+  <!-- Google font (opzionale, migliora leggibilità) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden focusable="false"><path fill="currentColor" d="M3 13h4v7H3zM9 7h4v13H9zM15 3h4v17h-4z"/></svg>
+      <div>
+        <h1>Schede Allenamento</h1>
+        <p class="muted">Visualizza, traccia e cronometra le tue sessioni</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="summary" id="summary">Caricamento...</div>
+      <div class="header-controls">
+        <label class="toggle">
+          <input type="checkbox" id="persistToggle" checked>
+          <span>Salva</span>
+        </label>
+        <button id="resetProgress" class="btn ghost">Reset</button>
+        <button id="themeToggle" class="btn">Tema</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="scheda-tabs" id="tabs">
+    <!-- tabs inseriti da JS -->
+  </nav>
+
+  <main id="app" class="container">
+    <!-- schede renderizzate qui -->
+  </main>
+
+  <aside id="stickyTimer" class="sticky-timer hidden" aria-live="polite">
+    <div class="sticky-header">
+      <div>
+        <strong id="stickyTitle">Timer</strong>
+        <div class="muted small" id="stickySub">Nessun timer attivo</div>
+      </div>
+      <button id="stickyClose" class="icon-btn" title="Chiudi timer">✕</button>
+    </div>
+    <div class="sticky-body">
+      <div class="big-count" id="stickyCount">00:00</div>
+      <div class="sticky-controls">
+        <button id="stickyStart" class="btn accent">Start</button>
+        <button id="stickyPause" class="btn" disabled>Pausa</button>
+        <button id="stickyReset" class="btn ghost">Reset</button>
+      </div>
+      <progress id="stickyProgress" value="0" max="100"></progress>
+    </div>
+  </aside>
+
+<!-- Image modal (inserisci nel body, ad es. subito sopra il footer) -->
+<div id="imgModal" class="img-modal hidden" aria-hidden="true">
+  <div class="img-modal-backdrop" id="imgModalBackdrop"></div>
+  <div class="img-modal-content" role="dialog" aria-modal="true">
+    <button id="imgModalClose" class="img-modal-close" aria-label="Chiudi immagine">×</button>
+    <img id="imgModalImg" src="" alt="Esercizio" />
+    <div id="imgModalTitle" class="img-modal-title"></div>
+  </div>
+</div>
+
+  <footer class="site-footer">
+    <div class="small muted">Suggerimento: espandi le sezioni per vedere i set. Tocca la checkbox per marcare completato — il timer parte se impostato.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
