@@ -209,27 +209,55 @@ const workoutData = {
   },
   "Scheda 2": {
     "Cardio Iniziale": {
-      "img": "https://image.shutterstock.com/image-photo/young-man-running-treadmill-260nw-1916347634.jpg",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrLlM-gm6GQPI5M5ZaH0cZ_X6TdAMOBDcnbQ&sg",
       "andamento": [{"velocita": 6, "pendenza": 4, "tempo": 10, "unita": "m"}],
       "descrizione": "",
       "media": []
     },
-    "Mobilita": {
-      "img": "https://image.shutterstock.com/image-photo/group-women-doing-warmup-exercise-260nw-1937949369.jpg",
-      "ripetizioni": [
-        {"kg": 0, "n_ripetizioni": 20},
-        {"kg": 0, "n_ripetizioni": 8},
-        {"kg": 0, "n_ripetizioni": 10},
-        {"kg": 0, "n_ripetizioni": 20},
-        {"kg": 0, "n_ripetizioni": 12}
-      ],
-      "recupero": 0,
-      "unita": "s",
-      "descrizione": "",
-      "media": []
+       "Mobilita": {
+      "Shoulder CARs (rotazioni lente e ampie)": {
+        "img": "https://thegolfperformancecenter.com/wp-content/uploads/2018/12/Tyler_-11-2.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 20}, {"kg": 0, "n_ripetizioni": 20}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Scapular pull-up": {
+        "img": "https://pelank.com/wp-content/uploads/2025/01/Scapula-Pull-up.gif",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
+        "recupero": 0,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Cat-cow": {
+        "img": "https://liftmanual.com/wp-content/uploads/2023/04/cat-cow-stretch.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Band lat stretch (allungamento dorsale con elastico)": {
+        "img": "https://i.ytimg.com/vi/O_n8yYWgNZE/maxresdefault.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Scapular retraction con elastico": {
+        "img": "https://s3assets.skimble.com/assets/1963536/image_iphone.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 6}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      }
     },
     "Deadlift / Rematore bilanciere": {
-      "img": "https://image.shutterstock.com/image-photo/athletic-man-doing-deadlift-exercise-260nw-1915654504.jpg",
+      "img": "https://liftmanual.com/wp-content/uploads/2023/04/strongman-deadlift.jpg",
       "ripetizioni": [
         {"kg": 45, "n_ripetizioni": 6},
         {"kg": 45, "n_ripetizioni": 6},
@@ -242,7 +270,7 @@ const workoutData = {
       "media": []
     },
     "Pull-up / Lat machine": {
-      "img": "https://image.shutterstock.com/image-photo/young-woman-doing-pull-up-260nw-1530134830.jpg",
+      "img": "https://training.fit/wp-content/uploads/2020/02/latzug-1024x573.png",
       "ripetizioni": [
         {"kg": 0, "n_ripetizioni": 8},
         {"kg": 0, "n_ripetizioni": 8},
@@ -255,7 +283,7 @@ const workoutData = {
       "media": []
     },
     "Bent-over one arm row": {
-      "img": "https://image.shutterstock.com/image-photo/man-doing-one-arm-dumbbell-260nw-1786528576.jpg",
+      "img": "https://training.fit/wp-content/uploads/2020/02/rudern-kurzhantel-800x448.png",
       "ripetizioni": [
         {"kg": 18, "n_ripetizioni": 10},
         {"kg": 18, "n_ripetizioni": 10},
@@ -267,7 +295,7 @@ const workoutData = {
       "media": []
     },
     "Lat pulldown close grip": {
-      "img": "https://image.shutterstock.com/image-photo/man-doing-close-grip-lat-260nw-1765150831.jpg",
+      "img": "https://images.squarespace-cdn.com/content/v1/5ffcea9416aee143500ea103/1638412155997-IDN7VJK5V4UXL4SKOPAE/Close%2BGrip%2BV-Bar%2BPulldown.jpeg",
       "ripetizioni": [
         {"kg": 45, "n_ripetizioni": 10},
         {"kg": 45, "n_ripetizioni": 10},
@@ -279,7 +307,7 @@ const workoutData = {
       "media": []
     },
     "Curl bilanciere": {
-      "img": "https://image.shutterstock.com/image-photo/man-doing-bicep-curls-barbell-260nw-1696231191.jpg",
+      "img": "https://static.wixstatic.com/media/c7a3e2_f50061c2c60c4c3699fe1937e36c2289~mv2.jpg/v1/fill/w_740,h_460,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c7a3e2_f50061c2c60c4c3699fe1937e36c2289~mv2.jpg",
       "ripetizioni": [
         {"kg": 10, "n_ripetizioni": 8},
         {"kg": 10, "n_ripetizioni": 8},
@@ -292,7 +320,7 @@ const workoutData = {
       "media": []
     },
     "Curl martello": {
-      "img": "https://image.shutterstock.com/image-photo/young-man-doing-hammer-curls-260nw-1934634804.jpg",
+      "img": "https://www.my-personaltrainer.it/2023/01/04/hammer-curl-orig.jpeg",
       "ripetizioni": [
         {"kg": 10, "n_ripetizioni": 10},
         {"kg": 10, "n_ripetizioni": 10},
@@ -304,7 +332,7 @@ const workoutData = {
       "media": []
     },
     "Curl ai cavi": {
-      "img": "https://image.shutterstock.com/image-photo/young-man-doing-cable-curls-260nw-1934634820.jpg",
+      "img": "https://articoli.nonsolofitness.it/resources/big/c7e643b885d3368796a19800b102675b.jpg.webp",
       "ripetizioni": [
         {"kg": 0, "n_ripetizioni": 12},
         {"kg": 0, "n_ripetizioni": 12},
@@ -316,7 +344,7 @@ const workoutData = {
       "media": []
     },
     "Rear delt / Face pull": {
-      "img": "https://image.shutterstock.com/image-photo/woman-doing-face-pull-exercise-260nw-1764587749.jpg",
+      "img": "https://liftmanual.com/wp-content/uploads/2023/04/cable-rear-delt-row.jpg",
       "ripetizioni": [
         {"kg": 0, "n_ripetizioni": 12},
         {"kg": 0, "n_ripetizioni": 12},
@@ -328,9 +356,8 @@ const workoutData = {
       "media": []
     },
     "Finisher funzionale 3 giri": {
-      "img": "https://image.shutterstock.com/image-photo/functional-training-260nw-1797385988.jpg",
       "Rematore manubri": {
-        "img": "https://image.shutterstock.com/image-photo/man-doing-one-arm-dumbbell-260nw-1786528576.jpg",
+        "img": "https://www.muscoli.info/Media/MuscoliInfo/Immagini/Esercizi/rematore-con-manubri-a-presa-neutra-in-piedi.jpg",
         "ripetizioni": [{"kg": 18, "n_ripetizioni": 12}],
         "recupero": 30,
         "unita": "s",
@@ -338,7 +365,7 @@ const workoutData = {
         "media": []
       },
       "Face pull": {
-        "img": "https://image.shutterstock.com/image-photo/woman-doing-face-pull-exercise-260nw-1764587749.jpg",
+        "img": "https://trainingstation.co.uk/cdn/shop/articles/face-pulls-muscles-used_fe27890e-ac33-489a-bb21-a9bbcc84bfae_1400x.png?v=1738219155",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 15}],
         "recupero": 0,
         "unita": "s",
@@ -346,7 +373,7 @@ const workoutData = {
         "media": []
       },
       "Pull-up assistiti": {
-        "img": "https://image.shutterstock.com/image-photo/man-doing-assisted-pullups-workout-260nw-1726588509.jpg",
+        "img": "https://www.lyfta.app/_next/image?url=https%3A%2F%2Flyfta.app%2Fimages%2Fexercises%2F29971101.png&w=640&q=80",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
         "recupero": 30,
         "unita": "s",
@@ -355,7 +382,7 @@ const workoutData = {
       }
     },
     "LISS": {
-      "img": "https://image.shutterstock.com/image-photo/walking-on-treadmill-at-gym-260nw-1523907246.jpg",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrLlM-gm6GQPI5M5ZaH0cZ_X6TdAMOBDcnbQ&sg",
       "andamento": [{"velocita": 5.5, "pendenza": 5, "tempo": 10, "unita": "m"}],
       "descrizione": "Camminata in pendenza",
       "media": []
@@ -363,7 +390,7 @@ const workoutData = {
   },
   "Scheda 3": {
     "Cardio Iniziale": {
-      "img": "https://image.shutterstock.com/image-photo/man-warm-up-running-treadmill-260nw-1357386128.jpg",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrLlM-gm6GQPI5M5ZaH0cZ_X6TdAMOBDcnbQ&sg",
       "andamento": [{"velocita": 6, "pendenza": 4, "tempo": 10, "unita": "m"}],
       "descrizione": "",
       "media": []
@@ -551,7 +578,7 @@ const workoutData = {
       }
     },
     "LISS": {
-      "img": "https://image.shutterstock.com/image-photo/walking-on-treadmill-at-gym-260nw-1523907246.jpg",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrLlM-gm6GQPI5M5ZaH0cZ_X6TdAMOBDcnbQ&sg",
       "andamento": [{"velocita": 5.5, "pendenza": 5, "tempo": 10, "unita": "m"}],
       "descrizione": "",
       "media": []
