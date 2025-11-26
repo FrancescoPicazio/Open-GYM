@@ -167,7 +167,13 @@ progress::-webkit-progress-value{background:linear-gradient(90deg,var(--accent-2
 
 /* footer */
 .site-footer{max-width:960px;margin:12px auto 0;padding:6px;color:var(--muted);font-size:0.9rem}
-
+.status{
+  font-size:0.88rem;
+  color:var(--accent-2);
+  margin-top:4px;
+  margin-bottom:4px;
+  font-weight:600;
+}
 /* responsive: mobile-first tweaks */
 @media (max-width:700px){
   body{padding:10px}
