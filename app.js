@@ -593,8 +593,8 @@ const workoutData = {
 
 
 // -----------------------------
-// STORAGE / DOM ELEMENTS
-const storageKey = 'workout_progress_v3';
+// DOM references & storage
+const storageKey = 'workout_progress_v4';
 let persistEnabled = true;
 
 const app = document.getElementById('app');
@@ -619,18 +619,15 @@ if(themeToggle) themeToggle.addEventListener('click', ()=>{
 });
 
 // -----------------------------
-// PROGRESS PERSISTENCE
+// progress persistence
 function loadProgress(){ try{ const raw = localStorage.getItem(storageKey); return raw? JSON.parse(raw) : {}; }catch(e){return {}}}
 function saveProgress(progress){ if(!persistEnabled) return; localStorage.setItem(storageKey, JSON.stringify(progress)); }
 let progress = loadProgress();
 
 // -----------------------------
-// AUDIO / UTILITIES
+// audio, utils
 function beep(){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value=880; g.gain.setValueAtTime(0.0001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime+0.02); o.connect(g); g.connect(ctx.destination); o.start(); setTimeout(()=>{ o.stop(); ctx.close(); }, 300);}catch(e){} }
-
 function fmt(seconds){ if(seconds<=0) return '00:00'; const mm = Math.floor(seconds/60).toString().padStart(2,'0'); const ss = Math.floor(seconds%60).toString().padStart(2,'0'); return `${mm}:${ss}`; }
-
-// Duration heuristic (null-safe)
 function computeDuration(exer, set, andamentoSegment){
   if(andamentoSegment){
     const u = andamentoSegment.unita || 's';
@@ -643,7 +640,7 @@ function computeDuration(exer, set, andamentoSegment){
 }
 
 // -----------------------------
-// IMAGE MODAL HELPERS
+// image modal helpers
 const imgModalEl = document.getElementById('imgModal');
 const imgModalImg = document.getElementById('imgModalImg');
 const imgModalTitle = document.getElementById('imgModalTitle');
@@ -674,7 +671,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 // -----------------------------
-// STICKY TIMER
+// sticky timer (single global instance)
 const sticky = {
   el: document.getElementById('stickyTimer'),
   title: document.getElementById('stickyTitle'),
@@ -685,65 +682,74 @@ const sticky = {
   resetBtn: document.getElementById('stickyReset'),
   progressBar: document.getElementById('stickyProgress'),
   closeBtn: document.getElementById('stickyClose'),
-  active: null,
+  active: null, // {id, scheda, exercise}
   timer: null,
   remaining: 0,
   total: 0
 };
 
-if(sticky.startBtn) sticky.startBtn.addEventListener('click', ()=> {
-  if(!sticky.active) return;
-  if(sticky.remaining <= 0) sticky.remaining = sticky.total;
-  startStickyTimer();
-});
-if(sticky.pauseBtn) sticky.pauseBtn.addEventListener('click', ()=> {
-  if(sticky.timer){ clearInterval(sticky.timer); sticky.timer = null; sticky.pauseBtn.textContent = 'Riprendi'; sticky.startBtn.disabled = false; }
-  else { startStickyTimer(); sticky.pauseBtn.textContent = 'Pausa'; sticky.startBtn.disabled = true; }
-});
-if(sticky.resetBtn) sticky.resetBtn.addEventListener('click', ()=> {
-  if(sticky.timer){ clearInterval(sticky.timer); sticky.timer = null; }
-  sticky.remaining = sticky.total;
-  updateStickyDisplay();
-  sticky.startBtn.disabled = false;
-  sticky.pauseBtn.disabled = true;
-});
-if(sticky.closeBtn) sticky.closeBtn.addEventListener('click', ()=> {
-  if(sticky.el) sticky.el.classList.add('hidden');
-});
-
-function startStickyTimer(){
+// utility: stop current sticky timer without marking progress
+function cancelStickyTimer(){
   if(sticky.timer) clearInterval(sticky.timer);
-  if(sticky.remaining <= 0) sticky.remaining = sticky.total;
-  if(sticky.startBtn) sticky.startBtn.disabled = true;
-  if(sticky.pauseBtn) sticky.pauseBtn.disabled = false;
+  sticky.timer = null;
+  sticky.active = null;
+  sticky.remaining = 0;
+  sticky.total = 0;
+  if(sticky.el) sticky.el.classList.add('hidden');
+  if(sticky.startBtn) sticky.startBtn.disabled = false;
+  if(sticky.pauseBtn) sticky.pauseBtn.disabled = true;
+  updateStickyDisplay();
+}
+
+// start sticky timer (replaces any running)
+function startStickyFor(id, scheda, exercise, totalSeconds){
+  // cancel existing
+  cancelStickyTimer();
+  sticky.active = { id, scheda, exercise };
+  sticky.total = totalSeconds;
+  sticky.remaining = totalSeconds;
+  if(sticky.title) sticky.title.textContent = `${exercise}`;
+  if(sticky.sub) sticky.sub.textContent = `${scheda}`;
+  if(sticky.el) sticky.el.classList.remove('hidden');
+  updateStickyDisplay();
+  // start interval
   sticky.timer = setInterval(()=>{
     sticky.remaining -= 1;
     updateStickyDisplay();
     if(sticky.remaining <= 0){
       clearInterval(sticky.timer);
       sticky.timer = null;
-      beep();
-      if(sticky.pauseBtn) sticky.pauseBtn.disabled = true;
-      if(sticky.startBtn) sticky.startBtn.disabled = false;
-      // mark progress for active id
-      if(sticky.active && sticky.active.id){
-        progress[sticky.active.id] = true;
+      // when timer ends: mark progress and sync checkbox
+      const sid = sticky.active && sticky.active.id;
+      if(sid){
+        progress[sid] = true;
         saveProgress(progress);
+        // update summary and badge
         updateSummary();
         if(sticky.active.scheda && sticky.active.exercise){
           updateProgressIndicator(sticky.active.scheda, sticky.active.exercise);
         }
-        // sync checkbox visible (if present) but avoid retriggering auto-start: programmatic change will be isTrusted=false
-        const cb = document.querySelector(`[data-id="${sticky.active.id}"]`);
+        // sync checkbox (programmatic change -> non user-initiated)
+        const cb = document.querySelector(`[data-id="${sid}"]`);
         if(cb && !cb.checked){
           cb.checked = true;
-          cb.dispatchEvent(new Event('change')); // programmatic, change handler checks isTrusted
+          // add running->completed class to its wrapper if present
+          const lab = cb.closest('.checkbox');
+          if(lab) lab.classList.remove('running'); lab && lab.classList.add('checked');
         }
       }
+      // beep & hide after short pause
+      beep();
+      setTimeout(()=>{ if(sticky.el) sticky.el.classList.add('hidden'); }, 400);
+      sticky.active = null;
+      sticky.remaining = 0;
+      sticky.total = 0;
+      updateStickyDisplay();
     }
   }, 1000);
 }
 
+// update sticky display
 function updateStickyDisplay(){
   if(!sticky.count) return;
   sticky.count.textContent = fmt(Math.max(0, Math.round(sticky.remaining)));
@@ -752,7 +758,7 @@ function updateStickyDisplay(){
 }
 
 // -----------------------------
-// HELPERS: progress badge update
+// helpers: badge & progress
 function updateProgressIndicator(schedaName, exerName){
   const selector = `[data-progress-for="${schedaName}__${exerName}"]`;
   const el = document.querySelector(selector);
@@ -760,341 +766,6 @@ function updateProgressIndicator(schedaName, exerName){
     el.textContent = progressForExercise(schedaName, exerName);
   }
 }
-
-// -----------------------------
-// RENDER
-function render(){
-  // tabs
-  if(tabsEl) tabsEl.innerHTML = '';
-  const keys = Object.keys(workoutData);
-  keys.forEach((k, idx)=>{
-    const t = document.createElement('button');
-    t.className = 'tab' + (idx===0 ? ' active' : '');
-    t.textContent = k;
-    t.addEventListener('click', ()=> {
-      document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-      t.classList.add('active');
-      document.querySelectorAll('.scheda').forEach(s=> s.style.display = 'none');
-      const target = document.getElementById(`scheda-${cssSafe(k)}`);
-      if(target) target.style.display = 'block';
-    });
-    if(tabsEl) tabsEl.appendChild(t);
-  });
-
-  if(app) app.innerHTML = '';
-  keys.forEach((schedaName, idx)=>{
-    const scheda = workoutData[schedaName];
-    const box = document.createElement('section');
-    box.className = 'scheda';
-    box.id = `scheda-${cssSafe(schedaName)}`;
-    if(idx !== 0) box.style.display = 'none';
-
-    const head = document.createElement('div'); head.className = 'scheda-head';
-    const title = document.createElement('h2'); title.textContent = schedaName;
-    head.appendChild(title);
-    const progressWrap = document.createElement('div');
-    progressWrap.className = 'small muted';
-    progressWrap.textContent = '';
-    head.appendChild(progressWrap);
-    box.appendChild(head);
-
-    const body = document.createElement('div'); body.className = 'scheda-body';
-
-    if(schedaName === 'Note'){
-      const n = document.createElement('div'); n.className = 'muted';
-      for(const [k,v] of Object.entries(scheda)){
-        const p = document.createElement('p'); p.innerHTML = `<strong>${k}:</strong> ${v}`; n.appendChild(p);
-      }
-      body.appendChild(n);
-      box.appendChild(body);
-      if(app) app.appendChild(box);
-      return;
-    }
-
-    for(const exerName of Object.keys(scheda)){
-      const exer = scheda[exerName];
-      const ex = document.createElement('div'); ex.className = 'exercise';
-
-      // header with collapse
-      const exHeader = document.createElement('div'); exHeader.className = 'exercise-header';
-
-      // LEFT: thumbnail (if available) + title/desc
-      const left = document.createElement('div');
-      // create thumbnail if exer has img
-      function createThumbIfAvailable(exerObj, exerDisplayName){
-        const url = exerObj && exerObj.img ? exerObj.img : null;
-        if(!url) return null;
-        const img = document.createElement('img');
-        img.className = 'exercise-thumb';
-        img.src = url;
-        img.alt = exerDisplayName || 'Esercizio';
-        img.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          openImageModal(url, exerDisplayName);
-        });
-        return img;
-      }
-      const thumb = createThumbIfAvailable(exer, exerName);
-      if(thumb){
-        // place thumbnail and then text in a small horizontal container
-        const wrapper = document.createElement('div');
-        wrapper.style.display = 'flex';
-        wrapper.style.alignItems = 'center';
-        wrapper.style.gap = '10px';
-        wrapper.appendChild(thumb);
-        const textBlock = document.createElement('div');
-        const h3 = document.createElement('h3'); h3.textContent = exerName;
-        const desc = document.createElement('div'); desc.className = 'muted small'; desc.textContent = exer.descrizione || '';
-        textBlock.appendChild(h3);
-        textBlock.appendChild(desc);
-        wrapper.appendChild(textBlock);
-        left.appendChild(wrapper);
-      } else {
-        const h3 = document.createElement('h3'); h3.textContent = exerName;
-        const desc = document.createElement('div'); desc.className = 'muted small'; desc.textContent = exer.descrizione || '';
-        left.appendChild(h3);
-        left.appendChild(desc);
-      }
-
-      // RIGHT: collapse button + progress indicator
-      const right = document.createElement('div'); right.style.display='flex'; right.style.gap='8px'; right.style.alignItems='center';
-      const collapseBtn = document.createElement('button'); collapseBtn.className='btn ghost'; collapseBtn.textContent='Mostra';
-      const progressIndicator = document.createElement('div'); progressIndicator.className = 'small muted';
-      progressIndicator.setAttribute('data-progress-for', `${schedaName}__${exerName}`);
-      progressIndicator.textContent = progressForExercise(schedaName, exerName);
-      right.appendChild(progressIndicator);
-      right.appendChild(collapseBtn);
-
-      exHeader.appendChild(left);
-      exHeader.appendChild(right);
-      ex.appendChild(exHeader);
-
-      const content = document.createElement('div'); content.className='exercise-content'; content.style.marginTop='6px'; content.style.display='none';
-
-      // andamento (cardio)
-      if(exer.andamento){
-        const sets = document.createElement('div'); sets.className='sets';
-        exer.andamento.forEach((seg, si)=>{
-          const setEl = document.createElement('div'); setEl.className='set segment';
-          const info = document.createElement('div'); info.className='info';
-          info.innerHTML = `<div class="meta"><strong>Segmento ${si+1}</strong> — ${seg.tempo}${seg.unita||'s'} @ v:${seg.velocita||'-'} p:${seg.pendenza||'-'}</div><div class="small muted">${exer.descrizione || ''}</div>`;
-          setEl.appendChild(info);
-
-          // controls
-          const ctrl = controlsForSegment(schedaName, exerName, exer, null, seg, `andamento_${si}`);
-          setEl.appendChild(ctrl.wrap);
-          sets.appendChild(setEl);
-        });
-        content.appendChild(sets);
-      }
-
-      // ripetizioni (se esercizio ha array ripetizioni)
-      if(exer.ripetizioni){
-        const sets = document.createElement('div'); sets.className='sets';
-        exer.ripetizioni.forEach((set, si)=>{
-          const setEl = document.createElement('div'); setEl.className='set';
-          const leftInfo = document.createElement('div'); leftInfo.className='info';
-          leftInfo.innerHTML = `<div class="meta">${set.kg} kg × ${set.n_ripetizioni} rep</div><div class="small muted">${exer.unita || ''}</div>`;
-          setEl.appendChild(leftInfo);
-
-          const ctrl = controlsForSegment(schedaName, exerName, exer, set, null, `set_${si}`);
-          setEl.appendChild(ctrl.wrap);
-          sets.appendChild(setEl);
-        });
-        content.appendChild(sets);
-      }
-
-      // nested (es. Mobilita con singoli esercizi, Finisher, Addome ecc.)
-      for(const key of Object.keys(exer)){
-        if(['ripetizioni','andamento','recupero','unita','descrizione','media','img'].includes(key)) continue;
-        const nested = exer[key];
-        if(typeof nested === 'object' && (nested.ripetizioni || nested.andamento)){
-          const block = document.createElement('div'); block.className='nested';
-          // nested title with thumb if available
-          const titleN = document.createElement('div');
-          const nestedThumb = createThumbIfAvailable(nested, key);
-          if(nestedThumb){
-            const wrapper = document.createElement('div'); wrapper.style.display='flex'; wrapper.style.alignItems='center'; wrapper.style.gap='10px';
-            wrapper.appendChild(nestedThumb);
-            const t = document.createElement('div'); t.innerHTML = `<strong>${key}</strong>`;
-            wrapper.appendChild(t);
-            titleN.appendChild(wrapper);
-          } else {
-            titleN.innerHTML = `<strong>${key}</strong>`;
-          }
-          block.appendChild(titleN);
-
-          if(nested.ripetizioni){
-            const sets = document.createElement('div'); sets.className='sets';
-            nested.ripetizioni.forEach((set, si)=>{
-              const setEl = document.createElement('div'); setEl.className='set';
-              const leftInfo = document.createElement('div'); leftInfo.className='info';
-              leftInfo.innerHTML = `<div class="meta">${set.kg} kg × ${set.n_ripetizioni} rep</div>`;
-              setEl.appendChild(leftInfo);
-
-              const ctrl = controlsForSegment(schedaName, exerName, nested, set, null, `${key}_set_${si}`, key);
-              setEl.appendChild(ctrl.wrap);
-              sets.appendChild(setEl);
-            });
-            block.appendChild(sets);
-          }
-
-          if(nested.andamento){
-            const sets = document.createElement('div'); sets.className='sets';
-            nested.andamento.forEach((seg, si)=>{
-              const setEl = document.createElement('div'); setEl.className='set segment';
-              const info = document.createElement('div'); info.className='info';
-              info.innerHTML = `<div class="meta"><strong>Segmento ${si+1}</strong> — ${seg.tempo}${seg.unita||'s'}</div>`;
-              setEl.appendChild(info);
-              const ctrl = controlsForSegment(schedaName, exerName, nested, null, seg, `${key}_andamento_${si}`, key);
-              setEl.appendChild(ctrl.wrap);
-              sets.appendChild(setEl);
-            });
-            block.appendChild(sets);
-          }
-
-          content.appendChild(block);
-        }
-      }
-
-      ex.appendChild(content);
-      collapseBtn.addEventListener('click', ()=>{
-        const show = content.style.display === 'none';
-        content.style.display = show ? 'block' : 'none';
-        collapseBtn.textContent = show ? 'Nascondi' : 'Mostra';
-      });
-
-      body.appendChild(ex);
-    }
-
-    box.appendChild(body);
-    if(app) app.appendChild(box);
-  });
-
-  updateSummary();
-}
-
-// -----------------------------
-// CONTROLS CREATION (checkbox, timer controls) - versione semplificata e robusta
-function controlsForSegment(schedaName, exerName, exerObj, set, andamentoSegmentOrNull, suffix, nestedKey){
-  const wrap = document.createElement('div');
-  wrap.className = 'timer';
-
-  // id coerente per salvataggio/progressi
-  const id = `${schedaName}__${exerName}__${suffix}`;
-
-  // durata calcolata (secondi)
-  const duration = computeDuration(exerObj, set, andamentoSegmentOrNull);
-
-  // duration input (seconds)
-  const inputDur = document.createElement('input');
-  inputDur.type = 'number';
-  inputDur.min = 0;
-  inputDur.value = duration;
-  inputDur.title = 'Durata (s)';
-  inputDur.style.width = '88px';
-
-  // display del conto alla rovescia
-  const countSpan = document.createElement('div');
-  countSpan.className = 'count';
-  countSpan.textContent = fmt(Number(inputDur.value));
-
-  // bottoni
-  const startBtn = document.createElement('button'); startBtn.className = 'btn ghost'; startBtn.textContent = '▶';
-  const pauseBtn = document.createElement('button'); pauseBtn.className = 'btn ghost'; pauseBtn.textContent = '⏸'; pauseBtn.disabled = true;
-  const resetBtn = document.createElement('button'); resetBtn.className = 'btn ghost'; resetBtn.textContent = '↺';
-
-  // checkbox visibile: la usiamo come elemento "reale" nel DOM
-  const innerCB = document.createElement('input');
-  innerCB.type = 'checkbox';
-  innerCB.checked = !!progress[id];
-  innerCB.dataset.id = id;
-  innerCB.setAttribute('data-id', id);
-
-  // wrapper visuale per la checkbox (stile)
-  const box = document.createElement('label');
-  box.className = 'checkbox';
-  box.style.marginLeft = '6px';
-  box.appendChild(innerCB);
-  if(innerCB.checked) box.classList.add('checked');
-
-  // quando l'utente cambia la checkbox:
-  // 1) salvo lo stato immediatamente
-  // 2) avvio il timer (se duration>0) — ma avvio solo per eventi user-initiated (isTrusted)
-  innerCB.addEventListener('change', (e) => {
-    if(innerCB.checked){
-      progress[id] = true;
-      saveProgress(progress);
-      box.classList.add('checked');
-      updateSummary();
-      updateProgressIndicator(schedaName, exerName);
-      // avvia il timer solo se l'azione è user-initiated
-      if (e && e.isTrusted && Number(inputDur.value) > 0) {
-        startBtn.click();
-      }
-    } else {
-      delete progress[id];
-      saveProgress(progress);
-      box.classList.remove('checked');
-      updateSummary();
-      updateProgressIndicator(schedaName, exerName);
-    }
-  });
-
-  // quando si preme start: popola sticky e avvia
-  startBtn.addEventListener('click', () => {
-    const total = Number(inputDur.value) || 0;
-    if (total <= 0) return;
-    sticky.active = { scheda: schedaName, exercise: exerName, id: id, nested: nestedKey || null };
-    sticky.total = total;
-    sticky.remaining = total;
-    sticky.title.textContent = `${exerName}${nestedKey ? ' — ' + nestedKey : ''}`;
-    sticky.sub.textContent = `${schedaName}`;
-    if (sticky.el) sticky.el.classList.remove('hidden');
-    updateStickyDisplay();
-    startStickyTimer();
-    // highlight visivo del set (se presente)
-    const allSets = document.querySelectorAll('.set');
-    allSets.forEach(s => { if (s && s.style) s.style.outline = 'none'; });
-    let el = null;
-    if (typeof startBtn.closest === 'function') el = startBtn.closest('.set');
-    if (el && el.style) el.style.outline = '2px solid rgba(79,156,255,0.14)';
-  });
-
-  // pausa / resume usando il controllo sticky
-  pauseBtn.addEventListener('click', () => {
-    if(sticky.pauseBtn) sticky.pauseBtn.click();
-  });
-
-  // reset locale: se il sticky attivo corrisponde, resetta quello, altrimenti resetta il conteggio locale
-  resetBtn.addEventListener('click', () => {
-    if (sticky.active && sticky.active.id === id) {
-      if(sticky.resetBtn) sticky.resetBtn.click();
-    } else {
-      countSpan.textContent = fmt(Number(inputDur.value));
-    }
-  });
-
-  // aggiornamento del display quando la durata viene cambiata manualmente
-  inputDur.addEventListener('input', () => {
-    const v = Number(inputDur.value) || 0;
-    countSpan.textContent = fmt(v);
-  });
-
-  // costruzione del wrapper (ordine leggibile)
-  wrap.appendChild(inputDur);
-  wrap.appendChild(countSpan);
-  wrap.appendChild(startBtn);
-  wrap.appendChild(pauseBtn);
-  wrap.appendChild(resetBtn);
-  wrap.appendChild(box);
-
-  // ritorniamo anche l'id così eventuali caller possono usarlo
-  return { wrap, startBtn, pauseBtn, resetBtn, checkbox: innerCB, id };
-}
-
-// -----------------------------
-// PROGRESS / SUMMARY FUNCTIONS
 function cssSafe(s){ return s.replace(/\s+/g,'_').replace(/[^\w\-]/g,''); }
 
 function progressForExercise(schedaName, exerName){
@@ -1158,7 +829,271 @@ function updateSummary(){
 }
 
 // -----------------------------
-// THEME (same as before)
+// RENDER
+function render(){
+  // tabs
+  if(tabsEl) tabsEl.innerHTML = '';
+  const keys = Object.keys(workoutData);
+  keys.forEach((k, idx)=>{
+    const t = document.createElement('button');
+    t.className = 'tab' + (idx===0 ? ' active' : '');
+    t.textContent = k;
+    t.addEventListener('click', ()=> {
+      document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+      t.classList.add('active');
+      document.querySelectorAll('.scheda').forEach(s=> s.style.display = 'none');
+      const target = document.getElementById(`scheda-${cssSafe(k)}`);
+      if(target) target.style.display = 'block';
+    });
+    if(tabsEl) tabsEl.appendChild(t);
+  });
+
+  if(app) app.innerHTML = '';
+  keys.forEach((schedaName, idx)=>{
+    const scheda = workoutData[schedaName];
+    const box = document.createElement('section');
+    box.className = 'scheda';
+    box.id = `scheda-${cssSafe(schedaName)}`;
+    if(idx !== 0) box.style.display = 'none';
+
+    const head = document.createElement('div'); head.className = 'scheda-head';
+    const title = document.createElement('h2'); title.textContent = schedaName;
+    head.appendChild(title);
+    const progressWrap = document.createElement('div');
+    progressWrap.className = 'small muted';
+    progressWrap.textContent = '';
+    head.appendChild(progressWrap);
+    box.appendChild(head);
+
+    const body = document.createElement('div'); body.className = 'scheda-body';
+
+    if(schedaName === 'Note'){
+      const n = document.createElement('div'); n.className = 'muted';
+      for(const [k,v] of Object.entries(scheda)){
+        const p = document.createElement('p'); p.innerHTML = `<strong>${k}:</strong> ${v}`; n.appendChild(p);
+      }
+      body.appendChild(n);
+      box.appendChild(body);
+      if(app) app.appendChild(box);
+      return;
+    }
+
+    for(const exerName of Object.keys(scheda)){
+      const exer = scheda[exerName];
+      const ex = document.createElement('div'); ex.className = 'exercise';
+
+      // header
+      const exHeader = document.createElement('div'); exHeader.className = 'exercise-header';
+
+      // LEFT: thumb + text
+      const left = document.createElement('div'); left.className = 'left';
+      function createThumbIfAvailable(exerObj, exerDisplayName){
+        const url = exerObj && exerObj.img ? exerObj.img : null;
+        if(!url) return null;
+        const img = document.createElement('img');
+        img.className = 'exercise-thumb';
+        img.src = url;
+        img.alt = exerDisplayName || 'Esercizio';
+        img.addEventListener('click', (ev)=>{
+          ev.stopPropagation();
+          openImageModal(url, exerDisplayName);
+        });
+        return img;
+      }
+      const thumb = createThumbIfAvailable(exer, exerName);
+      if(thumb){
+        left.appendChild(thumb);
+      }
+      const textBlock = document.createElement('div');
+      const h3 = document.createElement('h3'); h3.textContent = exerName;
+      const desc = document.createElement('div'); desc.className = 'muted small'; desc.textContent = exer.descrizione || '';
+      textBlock.appendChild(h3); textBlock.appendChild(desc);
+      left.appendChild(textBlock);
+
+      // RIGHT: collapse + badge
+      const right = document.createElement('div'); right.style.display='flex'; right.style.gap='8px'; right.style.alignItems='center';
+      const progressIndicator = document.createElement('div'); progressIndicator.className = 'small muted';
+      progressIndicator.setAttribute('data-progress-for', `${schedaName}__${exerName}`);
+      progressIndicator.textContent = progressForExercise(schedaName, exerName);
+      const collapseBtn = document.createElement('button'); collapseBtn.className='btn ghost'; collapseBtn.textContent='Mostra';
+      right.appendChild(progressIndicator); right.appendChild(collapseBtn);
+
+      exHeader.appendChild(left); exHeader.appendChild(right);
+      ex.appendChild(exHeader);
+
+      const content = document.createElement('div'); content.className='exercise-content'; content.style.marginTop='6px'; content.style.display='none';
+
+      // andamento
+      if(exer.andamento){
+        const sets = document.createElement('div'); sets.className='sets';
+        exer.andamento.forEach((seg, si)=>{
+          const setEl = document.createElement('div'); setEl.className='set';
+          const info = document.createElement('div'); info.className='info';
+          info.innerHTML = `<div class="meta"><strong>Segmento ${si+1}</strong> — ${seg.tempo}${seg.unita||'s'} @ v:${seg.velocita||'-'} p:${seg.pendenza||'-'}</div><div class="small muted">${exer.descrizione || ''}</div>`;
+          setEl.appendChild(info);
+          const ctrl = controlsForSegment(schedaName, exerName, exer, null, seg, `andamento_${si}`);
+          setEl.appendChild(ctrl.wrap);
+          sets.appendChild(setEl);
+        });
+        content.appendChild(sets);
+      }
+
+      // ripetizioni
+      if(exer.ripetizioni){
+        const sets = document.createElement('div'); sets.className='sets';
+        exer.ripetizioni.forEach((set, si)=>{
+          const setEl = document.createElement('div'); setEl.className='set';
+          const leftInfo = document.createElement('div'); leftInfo.className='info';
+          leftInfo.innerHTML = `<div class="meta">${set.kg} kg × ${set.n_ripetizioni} rep</div><div class="small muted">${exer.unita || ''}</div>`;
+          setEl.appendChild(leftInfo);
+          const ctrl = controlsForSegment(schedaName, exerName, exer, set, null, `set_${si}`);
+          setEl.appendChild(ctrl.wrap);
+          sets.appendChild(setEl);
+        });
+        content.appendChild(sets);
+      }
+
+      // nested
+      for(const key of Object.keys(exer)){
+        if(['ripetizioni','andamento','recupero','unita','descrizione','media','img'].includes(key)) continue;
+        const nested = exer[key];
+        if(typeof nested === 'object' && (nested.ripetizioni || nested.andamento)){
+          const block = document.createElement('div'); block.className='nested';
+          const titleN = document.createElement('div');
+          const nestedThumb = createThumbIfAvailable(nested, key);
+          if(nestedThumb){
+            const wr = document.createElement('div'); wr.style.display='flex'; wr.style.alignItems='center'; wr.style.gap='8px';
+            wr.appendChild(nestedThumb); const t = document.createElement('div'); t.innerHTML = `<strong>${key}</strong>`; wr.appendChild(t); titleN.appendChild(wr);
+          } else {
+            titleN.innerHTML = `<strong>${key}</strong>`;
+          }
+          block.appendChild(titleN);
+
+          if(nested.ripetizioni){
+            const sets = document.createElement('div'); sets.className='sets';
+            nested.ripetizioni.forEach((set, si)=>{
+              const setEl = document.createElement('div'); setEl.className='set';
+              const leftInfo = document.createElement('div'); leftInfo.className='info';
+              leftInfo.innerHTML = `<div class="meta">${set.kg} kg × ${set.n_ripetizioni} rep</div>`;
+              setEl.appendChild(leftInfo);
+              const ctrl = controlsForSegment(schedaName, exerName, nested, set, null, `${key}_set_${si}`, key);
+              setEl.appendChild(ctrl.wrap);
+              sets.appendChild(setEl);
+            });
+            block.appendChild(sets);
+          }
+
+          if(nested.andamento){
+            const sets = document.createElement('div'); sets.className='sets';
+            nested.andamento.forEach((seg, si)=>{
+              const setEl = document.createElement('div'); setEl.className='set';
+              const info = document.createElement('div'); info.className='info';
+              info.innerHTML = `<div class="meta"><strong>Segmento ${si+1}</strong> — ${seg.tempo}${seg.unita||'s'}</div>`;
+              setEl.appendChild(info);
+              const ctrl = controlsForSegment(schedaName, exerName, nested, null, seg, `${key}_andamento_${si}`, key);
+              setEl.appendChild(ctrl.wrap);
+              sets.appendChild(setEl);
+            });
+            block.appendChild(sets);
+          }
+
+          content.appendChild(block);
+        }
+      }
+
+      ex.appendChild(content);
+      collapseBtn.addEventListener('click', ()=>{
+        const show = content.style.display === 'none';
+        content.style.display = show ? 'block' : 'none';
+        collapseBtn.textContent = show ? 'Nascondi' : 'Mostra';
+      });
+
+      body.appendChild(ex);
+    }
+
+    box.appendChild(body);
+    if(app) app.appendChild(box);
+  });
+
+  updateSummary();
+}
+
+// -----------------------------
+// controlsForSegment: checkbox starts/cancels timer, no extra buttons
+function controlsForSegment(schedaName, exerName, exerObj, set, andamentoSegmentOrNull, suffix, nestedKey){
+  const wrap = document.createElement('div'); wrap.className = 'timer';
+
+  const id = `${schedaName}__${exerName}__${suffix}`;
+  const duration = computeDuration(exerObj, set, andamentoSegmentOrNull);
+
+  // duration input
+  const inputDur = document.createElement('input'); inputDur.type='number'; inputDur.min=0; inputDur.value = duration; inputDur.title='Durata (s)'; inputDur.style.width='84px';
+  const countSpan = document.createElement('div'); countSpan.className='count'; countSpan.textContent = fmt(Number(inputDur.value));
+
+  // checkbox (single control)
+  const innerCB = document.createElement('input'); innerCB.type='checkbox'; innerCB.dataset.id = id; innerCB.setAttribute('data-id', id);
+  // if already marked in progress, keep checked
+  innerCB.checked = !!progress[id];
+
+  const box = document.createElement('label'); box.className='checkbox'; box.appendChild(innerCB);
+  if(innerCB.checked) box.classList.add('checked');
+
+  // when user toggles the checkbox
+  innerCB.addEventListener('change', (e) => {
+    // user-initiated check => start timer (do NOT mark progress yet)
+    if(e && e.isTrusted && innerCB.checked){
+      const total = Number(inputDur.value) || 0;
+      if(total <= 0){
+        // no duration => mark immediately (fallback)
+        progress[id] = true;
+        saveProgress(progress);
+        updateSummary();
+        updateProgressIndicator(schedaName, exerName);
+        box.classList.add('checked');
+        return;
+      }
+      // set running visual and start sticky timer for this set
+      box.classList.add('running');
+      // Start sticky timer (this replaces any running timer)
+      startStickyFor(id, schedaName, exerName, total);
+    } else if(e && e.isTrusted && !innerCB.checked){
+      // user cancelled before timer ended: if sticky active for this id -> cancel timer and do not mark
+      const activeId = sticky.active && sticky.active.id;
+      if(activeId === id){
+        cancelStickyTimer();
+      }
+      box.classList.remove('running');
+      // ensure we don't save progress (since timer didn't finish)
+      delete progress[id];
+      saveProgress(progress);
+      updateSummary();
+      updateProgressIndicator(schedaName, exerName);
+      // remove checked visual
+      box.classList.remove('checked');
+    } else {
+      // programmatic changes (from timer end) will set checked true but isTrusted=false: no auto-start
+      if(!e.isTrusted && innerCB.checked){
+        box.classList.remove('running');
+        box.classList.add('checked');
+      }
+    }
+  });
+
+  // when duration edited, update display
+  inputDur.addEventListener('input', ()=> {
+    const v = Number(inputDur.value) || 0;
+    countSpan.textContent = fmt(v);
+  });
+
+  wrap.appendChild(inputDur);
+  wrap.appendChild(countSpan);
+  wrap.appendChild(box);
+
+  return { wrap, checkbox: innerCB, id };
+}
+
+// -----------------------------
+// theme and init
 function applyTheme(t){
   if(t === 'light'){
     document.documentElement.style.setProperty('--bg','#f6f8fb');
@@ -1187,9 +1122,8 @@ function applyTheme(t){
   }
 }
 
-// -----------------------------
-// INIT
+// init
 const savedTheme = localStorage.getItem('theme') || 'dark';
 applyTheme(savedTheme);
 render();
-console.log('app.js caricato e funzionante — ora puoi cliccare la thumbnail per aprire l\'immagine; la checkbox salva il progresso e aggiorna i badge.');
+console.log('Interfaccia mobile-first caricata: checkbox avvia/annulla timer; immagini cliccabili; progresso salvato al termine del timer.');
