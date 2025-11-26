@@ -760,7 +760,8 @@ function updateStickyDisplay(){
 // -----------------------------
 // helpers: badge & progress
 function updateProgressIndicator(schedaName, exerName){
-  const selector = `[data-progress-for="${schedaName}__${exerName}"]`;
+  // aggiorna lo status sotto il titolo
+  const selector = `[data-status-for="${schedaName}__${exerName}"]`;
   const el = document.querySelector(selector);
   if(el){
     el.textContent = progressForExercise(schedaName, exerName);
@@ -886,37 +887,38 @@ function render(){
       const exHeader = document.createElement('div'); exHeader.className = 'exercise-header';
 
       // LEFT: thumb + text
-      const left = document.createElement('div'); left.className = 'left';
-      function createThumbIfAvailable(exerObj, exerDisplayName){
-        const url = exerObj && exerObj.img ? exerObj.img : null;
-        if(!url) return null;
-        const img = document.createElement('img');
-        img.className = 'exercise-thumb';
-        img.src = url;
-        img.alt = exerDisplayName || 'Esercizio';
-        img.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          openImageModal(url, exerDisplayName);
-        });
-        return img;
-      }
-      const thumb = createThumbIfAvailable(exer, exerName);
-      if(thumb){
-        left.appendChild(thumb);
-      }
-      const textBlock = document.createElement('div');
-      const h3 = document.createElement('h3'); h3.textContent = exerName;
-      const desc = document.createElement('div'); desc.className = 'muted small'; desc.textContent = exer.descrizione || '';
-      textBlock.appendChild(h3); textBlock.appendChild(desc);
-      left.appendChild(textBlock);
+     // ---- dentro render(), per ogni esercizio: creazione LEFT (thumb + title + status + desc)
+    const left = document.createElement('div'); left.className = 'left';
 
-      // RIGHT: collapse + badge
-      const right = document.createElement('div'); right.style.display='flex'; right.style.gap='8px'; right.style.alignItems='center';
-      const progressIndicator = document.createElement('div'); progressIndicator.className = 'small muted';
-      progressIndicator.setAttribute('data-progress-for', `${schedaName}__${exerName}`);
-      progressIndicator.textContent = progressForExercise(schedaName, exerName);
-      const collapseBtn = document.createElement('button'); collapseBtn.className='btn ghost'; collapseBtn.textContent='Mostra';
-      right.appendChild(progressIndicator); right.appendChild(collapseBtn);
+    // create thumbnail if exer has img (la tua funzione createThumbIfAvailable rimane la stessa)
+    const thumb = createThumbIfAvailable(exer, exerName);
+    if (thumb) left.appendChild(thumb);
+
+    // text block: title, status (qui), descrizione
+    const textBlock = document.createElement('div');
+    const h3 = document.createElement('h3'); h3.textContent = exerName;
+    textBlock.appendChild(h3);
+
+    // status (sotto il titolo, tra titolo e descrizione)
+    const statusEl = document.createElement('div');
+    statusEl.className = 'small muted status';
+    statusEl.setAttribute('data-status-for', `${schedaName}__${exerName}`);
+    statusEl.textContent = progressForExercise(schedaName, exerName);
+    textBlock.appendChild(statusEl);
+
+    // descrizione sotto lo stato
+    const desc = document.createElement('div'); desc.className = 'muted small'; desc.textContent = exer.descrizione || '';
+    textBlock.appendChild(desc);
+
+    left.appendChild(textBlock);
+
+    // ---- poi crei right senza il progressIndicator (rimuovi la creazione precedente)
+    const right = document.createElement('div');
+    right.style.display = 'flex';
+    right.style.gap = '8px';
+    right.style.alignItems = 'center';
+    const collapseBtn = document.createElement('button'); collapseBtn.className='btn ghost'; collapseBtn.textContent='Mostra';
+    right.appendChild(collapseBtn);
 
       exHeader.appendChild(left); exHeader.appendChild(right);
       ex.appendChild(exHeader);
