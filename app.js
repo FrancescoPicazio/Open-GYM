@@ -886,6 +886,19 @@ function render(){
       // header
       const exHeader = document.createElement('div'); exHeader.className = 'exercise-header';
 
+    function createThumbIfAvailable(exerObj, exerDisplayName){Code has comments. Press enter to view.
+        const url = exerObj && exerObj.img ? exerObj.img : null;
+        if(!url) return null;
+        const img = document.createElement('img');
+        img.className = 'exercise-thumb';
+        img.src = url;
+        img.alt = exerDisplayName || 'Esercizio';
+        img.addEventListener('click', (ev)=>{
+          ev.stopPropagation();
+          openImageModal(url, exerDisplayName);
+        });
+        return img;
+      }
       // LEFT: thumb + text
      // ---- dentro render(), per ogni esercizio: creazione LEFT (thumb + title + status + desc)
     const left = document.createElement('div'); left.className = 'left';
