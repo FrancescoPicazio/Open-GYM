@@ -914,7 +914,7 @@ function render(){
       // header
       const exHeader = document.createElement('div'); exHeader.className = 'exercise-header';
 
-    function createThumbIfAvailable(exerObj, exerDisplayName){Code has comments. Press enter to view.
+    function createThumbIfAvailable(exerObj, exerDisplayName){
         const url = exerObj && exerObj.img ? exerObj.img : null;
         if(!url) return null;
         const img = document.createElement('img');
