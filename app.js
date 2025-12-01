@@ -571,7 +571,6 @@ const workoutData = {
       }
     },
     "Finisher funzionale 3 giri": {
-      "img": "https://image.shutterstock.com/image-photo/functional-training-260nw-1797385988.jpg",
       "Bulgarian split squat": {
         "img": "https://fitnessprogramer.com/wp-content/uploads/2021/05/Dumbbell-Bulgarian-Split-Squat.gif",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
