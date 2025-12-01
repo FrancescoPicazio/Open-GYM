@@ -395,22 +395,50 @@ const workoutData = {
       "descrizione": "",
       "media": []
     },
-    "Mobilita": {
-      "img": "https://image.shutterstock.com/image-photo/group-people-doing-warmup-exercises-260nw-1936299110.jpg",
-      "ripetizioni": [
-        {"kg": 0, "n_ripetizioni": 10},
-        {"kg": 0, "n_ripetizioni": 20},
-        {"kg": 0, "n_ripetizioni": 15},
-        {"kg": 0, "n_ripetizioni": 8},
-        {"kg": 0, "n_ripetizioni": 15}
-      ],
-      "recupero": 0,
-      "unita": "s",
-      "descrizione": "",
-      "media": []
+   "Mobilita": {
+      "Hip circles": {
+        "img": "https://fitnessprogramer.com/wp-content/uploads/2021/01/hip-circles.gif",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}, {"kg": 0, "n_ripetizioni": 10}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Deep squat hold": {
+        "img": "https://liftmanual.com/wp-content/uploads/2023/04/full-squat-mobility.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 20}],
+        "recupero": 0,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Leg swings (frontali + laterali)": {
+        "img": "https://www.lyfta.app/_next/image?url=%2Fthumbnails%2F35021201.jpg&w=3840&q=75",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 15}, {"kg": 0, "n_ripetizioni": 15}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Cat-cow": {
+        "img": "https://liftmanual.com/wp-content/uploads/2023/04/cat-cow-stretch.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 8}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      },
+      "Glute bridge attivazione": {
+        "img": "https://www.barbrothers.it/wp-content/uploads/2019/12/Muscoli-coinvolti-nel-glute-bridge.jpg",
+        "ripetizioni": [{"kg": 0, "n_ripetizioni": 15}],
+        "recupero": 30,
+        "unita": "s",
+        "descrizione": "",
+        "media": []
+      }
     },
     "Hip thrust": {
-      "img": "https://image.shutterstock.com/image-photo/athlete-doing-hip-thrust-exercise-260nw-1799391299.jpg",
+      "img": "https://liftmanual.com/wp-content/uploads/2023/04/dumbbell-hip-thrust.jpg",
       "ripetizioni": [
         {"kg": 30, "n_ripetizioni": 8},
         {"kg": 30, "n_ripetizioni": 8},
@@ -423,7 +451,7 @@ const workoutData = {
       "media": []
     },
     "Squat bilanciere": {
-      "img": "https://image.shutterstock.com/image-photo/strong-man-squatting-barbell-260nw-1701578423.jpg",
+      "img": "https://www.lyfta.app/_next/image?url=https%3A%2F%2Flyfta.app%2Fimages%2Fexercises%2F23591101.png&w=3840&q=75",
       "ripetizioni": [
         {"kg": 20, "n_ripetizioni": 8},
         {"kg": 20, "n_ripetizioni": 8},
@@ -436,7 +464,7 @@ const workoutData = {
       "media": []
     },
     "Leg press": {
-      "img": "https://image.shutterstock.com/image-photo/young-man-exercising-leg-press-220260nw-541495181.jpg",
+      "img": "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
       "ripetizioni": [
         {"kg": 120, "n_ripetizioni": 10},
         {"kg": 120, "n_ripetizioni": 10},
@@ -449,7 +477,7 @@ const workoutData = {
       "media": []
     },
     "Lunge manubri": {
-      "img": "https://image.shutterstock.com/image-photo/woman-doing-dumbbell-lunges-260nw-1722057494.jpg",
+      "img": "https://static.strengthlevel.com/images/exercises/dumbbell-lunge/dumbbell-lunge-800.jpg",
       "ripetizioni": [
         {"kg": 10, "n_ripetizioni": 12},
         {"kg": 10, "n_ripetizioni": 12},
@@ -461,7 +489,7 @@ const workoutData = {
       "media": []
     },
     "Leg extension": {
-      "img": "https://image.shutterstock.com/image-photo/woman-doing-leg-extension-exercise-260nw-1770202640.jpg",
+      "img": "https://training.fit/wp-content/uploads/2020/03/beinstrecken-geraet-1.png",
       "ripetizioni": [
         {"kg": 0, "n_ripetizioni": 12},
         {"kg": 0, "n_ripetizioni": 12},
@@ -473,7 +501,7 @@ const workoutData = {
       "media": []
     },
     "Leg curl sdraiato": {
-      "img": "https://image.shutterstock.com/image-photo/woman-doing-leg-curl-exercise-260nw-1793992081.jpg",
+      "img": "https://www.lyfta.app/_next/image?url=https%3A%2F%2Flyfta.app%2Fimages%2Fexercises%2F05821101.png&w=640&q=80",
       "ripetizioni": [
         {"kg": 20, "n_ripetizioni": 12},
         {"kg": 20, "n_ripetizioni": 12},
@@ -485,7 +513,7 @@ const workoutData = {
       "media": []
     },
     "Calf seduto": {
-      "img": "https://image.shutterstock.com/image-photo/man-doing-seated-calf-raise-260nw-1932490419.jpg",
+      "img": "https://www.muscoli.info/Media/MuscoliInfo/Immagini/Esercizi/polpacci-calf-alla-macchina-seduti.jpg",
       "ripetizioni": [
         {"kg": 20, "n_ripetizioni": 15},
         {"kg": 20, "n_ripetizioni": 15},
@@ -497,7 +525,7 @@ const workoutData = {
       "media": []
     },
     "Chest press": {
-      "img": "https://image.shutterstock.com/image-photo/woman-doing-chest-press-machine-260nw-1769178029.jpg",
+      "img": "https://liftmanual.com/wp-content/uploads/2023/04/machine-inner-chest-press.jpg",
       "ripetizioni": [
         {"kg": 30, "n_ripetizioni": 8},
         {"kg": 30, "n_ripetizioni": 8},
@@ -509,7 +537,7 @@ const workoutData = {
       "media": []
     },
     "Rematore pulley inversa": {
-      "img": "https://image.shutterstock.com/image-photo/athlete-doing-seated-cable-row-exercise-260nw-1920011093.jpg",
+      "img": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUSEhIVFRUVFxcXFxUXFxYVFxcWFRUWFhUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGi0dHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAFBgQHAAIDAQj/xABEEAABAwIDBAcFBgMHBAMBAAABAAIDBBEFEiEGMUFREyJhcYGRsSMycqHBBzNCUmKyFILRNENTY3Oi8BUkkuEWVPEX/8QAGQEAAwEBAQAAAAAAAAAAAAAAAQIDAAQF/8QAJBEAAgICAwACAQUAAAAAAAAAAAECEQMhEjFBBCJhEzJRgcH/2gAMAwEAAhEDEQA/AKaauoXNq6BYww7CutWR9z/2FNNdSMfIXHMPkEpbFu/72HvcP9jk47RstC/4goz7Hj0aQ0NPxufFSMMw2nY8OY0l1777pDke6+hPmUxbByk1NiTuP0StaHi9jDVYDTPkMkjXBztdTZejZ+j5f7v/AGof2gyZTEbkb0oNrNd5QSHb/BY9FhkEbZOjF7jXW6ymp4mkdXKbbr8EK2EdeObW+70UnET7XwHqgwXoaYX6aALaQlzSHNHcvKH3R3LvJuSJ7McXYiAMpLRZexVTSR7u9JW0r3B7rG2oUDCal/Sx9Y++39wVeJNyLeQhkkYfKHEDrnUjsCLOSHtE8iWSx/EfQJqsSyfJXMH4m+SfMNN429yoauqHc1e2DfcR/CPRSmqKxdokuSv9oO2LcOhaW5XSyGzGE62A1fbkNPNM7yqW2rwR2JVJqTLkaerG217RsJDTv46u8Uqq9j030AZftFxB7y8VLhc3yANDRroALajTim3Zv7WntIZWsD2n+9jFnDtc29neFu5AP/5ncXFR/tXWf7OhHE5/TFxAJAsAP6p3LGD9PIuy7KGsjmjbLE4PY8Xa4biCpIVXfYtiTgJqR25lpWdmY2ePPKfEq02pWqdGsTNoog55VdzbVhhcwR3IJG/kVY+Oe+7x9FRlabSPPHM71KrjWic3sZm7UO4RD/yKN7KYo6plLHMsAL7yUiUzxl36py+z23TOt+X6otICDm1NV/DsD2AEl1tUtnah/wCVqMfaLJaJna/6FV90y0aoLHbCdp5Q9uQtaSQNyu7BzI+JrpH3JH4bevNfLfTHgVfH2UVDH0rRdxdbiSe9UTJuPoO+0uOWFpfG++o7TY81E2Kmc+lDnm7i52vcU8bZYOyanf1dcpHgkbYiAspQw7w+QeTytPwCQpbcYhIyrc1ryBlZp4Jkw3WJhOpLRcpH+0F//fSdgYP9oTthjvYs+EeiRlEiv8Zmf00lnG2Y6XKhfxD+Z8yvcWqndNJ8R9VFbI863ATaFaA7VuFoFsE4Azsk61ZCf1H9jk+bTD2T+8eqQNmf7VD8R/a5WPXxtkDmOdvKlPseJXFSbeaYdgmf9wDxsfoiDtl6d2+QopguCQ07w9ryTu17UjkqHjF2RPtDjuItfzeiTYYL96s/FcNjqcoe62W9rdqHs2Rp26Z3a9qCaHaZC+z9rck1jxHopuKWz+AU/CsGipmvEZPW33K9dQxSHM52um7sQbM0w7hzOo3uXWoFguVNUNa0NB3LyoqA4b0i7AJW1O93eEIwr72L/UZ+4J5qMLgkuX3N1lNgFK1zXAG4II1O8HRVUibixrIVf7TOtM/4j6NVghLdTSQvkl6QXOc+WVqN0IlbKuxGSxtzV/4J9zH8I9EgVGD0ROsYJVi4cwCJlt1gkm7ZWKpG01rG+gsVSzNpo4HCN0cmVlmZsoINtL6HQK46x9mSEC5DXac+qVTlfgMUzg4ucLnVoPVPbZSdel8afgZrNqIIbB+a7gCMrS64Pcu0GMR1ALGh7SQfeYW7+9aY3gkMwaHHIQAGkchwXSgwuOBvvOe63vONz4JNUdElL+iJ9l8HRVlQHkDq9G08HOzA2B52F7dqthp0VdYDTF1QHAAt6TORyc0+8D3C3krDj1CopWzlnBRSFDHT1ndxVE1pu95/U71KvDaGoDZDcE3QMuphqYm+QVoOkQkrZVVMyxCevs9kvO/Tc0epRyOopf8ACHkFLpqqIH2bNewIuVmSIO3WIdHDkyB3SXFz+HTeFWtjyPkraqKth99l+VwuUs0Tf7oeQQToaiqXsdwB8la2wdW+Gmjc3eNde9c/4yL8jfkpEFUC02bYdiPI3EO4dtNU1Uz4Huijjva4YcwFtbEmy6tpGREsY7M0Em443NylRuKNaTpr80xYe4mMEi19bd6PK9EpQp3ZVm3FLI6tlIY4i7dQCdzGp2om2iYP0j0XDFcYYyV7Ta4NuC1/jHltw3TvQY6orzEMPmdK8iNxBc7h2rl/0uo/w3eSfIMYDnBjQHOO4A3PkiU1LWNOtPvF943FMmLJpdspML0LwL1VFCmzn9pi+I/tKeMcuxkj279NUjbP/wBpi+L6FPeP/cSdwU5jRE+oxiVv4vkjeyWKvlnYx1iDf5JVq230RnYttqpg7/RK0qHi9jhtXVOgawsIbcm/kl0bSyn8Yv3Ir9on3cfxH0Kr+LilS0M+yytlsRdN0oe4Otb5r3FKoxyZW6dUFA/s6drN8I+qLY2PaD4QlZn0M2CYpD0PtCMyKVEBEYcWWDtx01VfQ6gAprwepe6KznucGmwzEmw5C6HHdipgTHq6WNzsriBfRQMOxeZ0jAXmxe0HduuF32pcbkciEJwo+2j+NvqFRLQjLnCSMfe8SyZHW6x9Gp1SRjxtNJ3n0asgeiZiGKTB4HSFfQWFs9jH8I9F84Yn7/ivpXCB7GP4R6INbHT0CqipaHll9SD81SWLVc+sUYs4FzXHe5uV1tBzV2T0t5824ce5VR9qk4irXSU4a+OSNoky62kFwXXHGwb5KEU2zoToF4bXVTXOJa6UEahwI5btbA6JhkxRrWXOhLQQDzPBImG42I7hkZu4b3Ocdee9MuDYK+VzZJb5RrY6Enu4DsQnGnsosl6RZezszG08TNA5zczufWJcAT4pnp2dUJUp6QOcDG4EWGYcQbbk5Uo6g7k2NW9kJlf7TD2j+wFUjX1T7nru3nieau/af35O4+ioysFz4n1XRj6Iy7NaWpfmF3u8ynn7OXl00lyTYDeb80jUkJzJ9+ziLLJIeNh9UZAXZN29LmiPKSDc7u5AI6yeYBhd48fkmDbk/d95SzQ1nRG9r6oeBvZ3lwOTeXut4pz2fpctO0E37UszbVE9TILFNWCyXp2HmEqGcpeibicEQqHOe42zagG2nEKx8GqGyQMey+UjS++w0Hoqfx8ukqZQL2adexWnsi21FAP0D1Kd0Tbb7Kr2slviE/8AqW+TVY7AOi/l+irLaR3/AH8x/wA4+oH0VlOdaL+X6LMKKuosUkpp+mitma42uLjUneitZtliMzi91Q9pO4Ms1oHAAf1S88ZnHvPqtxmHPs7kaFkk2QAtgtV61UMEsB/tEXxhWHiNOZGOYN7gLKu8D+/i+MJo2mqZGSNyuIGUaeCnMaLOEuyMztzmovgOzkkUrZHkackpVeMTgaSELyHHqnqe1OpHLmkadDqrLB2pwh9S1rWEAgk6pabsJOL9ZvzXPaDGaiKYtbIQMoO4cUMbtPV/4p8gl2PocNmNnpKUyF5BzNFrdl1NrcKkleHNtbLbVLWy2N1Er3h8l7MJGg3qTR4tPfV53HgEHZm1Qeg2flA3hFcOpHRMcHcTwS5Hi82W+dTqGukcx5LrkDRbYmjfFsEkmLi0jUhRKHZWZr2OJFg4HyIXOrxedrLh/wAlzw7HJ3SMBfoXAHTmU26BotFKeKYe6SWQtt7xH+1qbLpRxGWTp5GMNruJPZo3VHfgi7Fis2Pmc64c35q4YNoIo42sAc8hoBsLC9uZSlG47r7uPPtXdoTqPrC5fwDttdrZ2tDaaMEl4zg5nXZxaLWtfn8kt4bJFUGwvqXZmPFnsJN9RxF+ITpJEDoUOmwhmbOwWcPxAC/gShLGnGkNDK4ysEswVkct8rQALl2g+a9lxlrc3RxvlsN7LBl/y5zv/lBRGWia83kDndjh1R/LuUuOAcAB4JY4F3LZSfyG9R0RsC2jik1jzRyDfG9pae7k4dyesMx5hbaQZbbrXcD3pYjiC6E2VXFM51JnDaMZ3vynfex7wqzfsXUHXq+ZVnTWcLO/oR3FIW1dbV0jxlfeJ/uOI3Hix36vUeKRRaG5JkGn2OqWuv1fNM2yeESQPeZLdYDd2JRpdrqok3cN3JEsD2knlka1xGp5INMNjHtJhkk2XJbS6XXbK1HJvmptTtDI17m5h1SQvXbTyBoJKFGTVgt+ylRmvZvmnHD4THTsY7eBqk+ba+cvaxgzFxDQANSSbAb0WnxWeOKbp2ZJI7G2hFiLg3BsVhpMBz7O1Jmke0jK9x8lY2AwGOmiY7e1gB71UZ2yqb6Ftu5WrgVS59NC9290bSe8i6NCNiTtFglRPPmysDWyOINzcgu4+SZpm+zLb6ltvGyQ8X2pqRPMxpGVkjmjQ6dY2BPgpEmMVH8LHKHC7nEHTgLoJUFu+yF/8OqNbFuvaVJGzlWQLlmgsh8u1VSBYPb5LyLaqptq8eSamwaF5eha3XrSqihHBj7eL42+qZ9rR1mfCPqlbBz7aL42+qa9q2m8Z/T9SkkFCnX7lpT/AIe8eq61o7FpCfd04j1S+DLsNbWff/yNQFnFHtrD7YfA1AQ5BdFA/sX96/4CisLdL96E7GO9s/4CiYlsbdiSQGS6cXaimGfdydyFUh0RTC3XZIsKQ8WbaNQ8IF5GfE31CJVTC4WAub7lypG2ewWsczb/APkEbAWmlLGJxHJI47y7Tt0AHzTWCq522zdNIQPLuHkU8OxWMEMmg1vzKksel7CcQD4mvJ3jXvGhHndEY6scFRACmZZcdihioWdOiAl3WkjCbWeW25WN++//ADVRjUL1tSFgNWdS6Vu7K8ctWHz1C7OlUfpxwUaeoQMlRJdUi+XceHI9yjYpStqInwv/ABDQ/lcPdcO0GyCVdYS/K38I8ibH09Qp9JNLYZhnHkR3OvqsErGkjLHua4atJB7wbH0TLsZWwNmcJIS5zvcdocvmdEK2vjMdXJa1nWeLcnDW/I3Dlx2ZlP8AEx68foka9HTDVXh4cKicygFkhtHxIuO3ebqdhuJ4cKSVksLnTEHK619eFjfRJuNSn+Ik1/G71UaOY80En6wLsZaGhElIZumbHLA67Wi2Y2tY87nh3Lv0sstJPJM8ve6wubbhoBYaBKHTOB3o9QVDjQz3P4h9EkYU227/AMKz6VIWBGVeOzotS04/ymftCoxrjzV6YD/ZoP8ASZ+0KjJCFW7XyMparDhBGWvnkd0pvmF5c+o3E6WBvoO5Daon+Cg+N31QXFJz00wB06WT97kZlYDSUwc7KC83dvsCbE27AbpYwjF3QzbegViOHSx5TJG5geMzb/iHMeY81CAT19plBFCaZkVf/FM6FxBvESzVoGsYAIcOevV3pHifomjPkrF4tdkZetXaGJrhvPcNVlREG2tm15qgCThB9tF8bfVPG0lW6JsJABzNde/Y8/1SJhZ9tH8bfUJu2rk6sY7D6pJIKBdTjjh/dsKyLaI2HsWb0KqgvaalLm3B3FI0qGT2M2LY5keA6FjuqDc//igt2jZ/9Zny/ouO033jfgCCBBIrY6bP40ySQhsDWHKTcem5S4MSjcdYBp3IBscz2pPNpRONlie9LIDYbhr4rfcj5KZSVUZa8iO1hr2oBSkAa7uKbcap6KNgNHIX5o+vrex0sew79Et7onYN/wCowtGfLayJ4VhRqAZYoC4MILjcC3HQE6njYJIxAWi8URwTaieFoiikLRI5rXAW1BIB37tDvCzvw1lovkDQSdwFz4KusccZHOfbeSdD9E3bT1WSG3F5A8N5STVT2BWeRxlovjwqUbZEwhxLS3k46d//AD5o7TNKCbMEO6U/rHomOJdEHas55qnRJjYumRaxntW4cnENHQrk6IqY2QFePWMDX3bquczy4ad9+Y/od3YiEg7FEMYvu/8AR5hAIuYJL1idXFxLj2E9/kmiEZhrb5n1KVKItZPJH23A3aO1/qm6ieLbgo5M6jqi+P47mrsX9q8GjlLJHyhmUZOHHUfVDMHwiGOVrmztdbhojm1NIJIHgDVvWHeN/wArpZ2Uw8yVMbWNu4nQLQyc1YuSHB0dK3Zxkkj3Cdgu4m3K571HOy/+ez/niiG1my09JL7Vluku5pBDgRfXUcexLrqIg2IIPJMxEyfLssTumjRGkwJwpZIg9pLnDXghMNDpromwSNdQshbGG9HmBcPx5nZsx038PBTc6GbsUjsjIP7yPzVq4dHkijb+VjR5NCqvE8PI1ufMq08PFoYx/lt/aE92IVXiOys3SyG7Rd7jYmxs5xI+RU2twSQ08MYy3Ze+vPkoGOGR8z3veSXHnbdoNB2ALpWxHoYLOdfXiVk3WzNq9ER+zFRbc3/yWsOzs5GgG8jfxBsfREaPZ2sniklibI6OIXe4OsGgC53m5010QuIPtfO4X13njqimZsgQnrHfrbs9VIuONvEkrgxlnG4tYkEOvoRoR4WW/wDFMb+IfygBOAl07+szlnZubYe8OKO7Unqx+P0SzTVbXSMAB99mpP6gnXEMlm523ABN+W5CQUJdUNFxjebb+Kaah9HbVoWQx0LrAN1Kny0OlsGbTe+z4AhMDb6lPWIUlM4gyNIsLBRRQUO4E+ZWsaiPsdRvfI94HVY3rHlm3ehXed9iB3orhEcMRcIZD1m9YX3gc1xFFCTmLykewUwayUHS6mYVPfpRwDQvW4RTajOb96lUOGRxh+WS9x5IgoDYu7q27kOpJbSxf6jP3hMtRgzXt+9GqjU+yhzCRsmbI4O0H5SDb5IqkgU2O2LkTvLTuboO/iUj4sHsLmm9hxTdh0mZxJ4/VQsahFiS2/8ARcvK2d6XGNIF4GGshZl3uBe48zuCM07+KEUrQG6aAAC3zPqFN6SwA48fFehHo8+XbCMcikXQslSI5rtvy0TCExpuDbeDYrcG4UGKcNeL+6/Q9/AqS02dY8VjG7X65Xb+B5hayRHfdcqppsDyXJ73SNDWnUm3mgwi/jcQjySj3nuJv+m1gO6wv4qThOJ5iGtuTyCl7WUBf0cbBu0HIAaaqVg2ENp23OrzvP0HILizU9nb8ZvaN5YjbreXYlvAXOpqwFhsWOuOOm8X8LJpqX2BKVoSXVdz/wA6oQ+O9tG+UlSYW2s2nlrnsD2saI8waGgjUkXJuTyCE4mAWB34hoTzXK4D3d59VzrJxlseJXQ2cRxEoITJhLAYD3pPDetYJ1wRh/h93FBJGsE440Bu5OdKfZM+Bv7QkvaZhyJxp/u2/AP2hNVARW9XHmJPaV7iAtFD3FdJVpiwsyIdhSpmokU2P1EEMkUUpZHK052gA30sdSLg200QWKI5RqBoNCbHdyUmoe0RAjfdDDKjGgqIEq5zI98jt73OcRyLiTb5rm1qwBbNVkq0Yl4cPaM+JvqE/Yl7h+E/RIOH/eM+JvqE+V59mfhP0SzChNnOmq9wh15mW/MFzqjopGz0ftGH9QQ8N6NO10R6IW/Mk19wnraw2h7yEkGO53pYtIZ2GNjAemcT+UojjQs5tj+EqHso20x+EqZjrrPHwoPZvBfEh/MfNNGy7y6OS5vu3pVY25smnZUWbIO5ZmRGxiZzXOsSALbkLw/HKgSNiZJvd+Ldrq69t4spm0jus7wQrBZmtnbnF2uOXdcgu0BHj6rNKmNCTUlTot2HFoure56uYm3Hl6r2t6KVjm8XRkhzTuNtD8kGfQSNvdjgbWAte48LqFVOewOAvcNykWPLj5rlUT0G41bFmn2mAa0WHPjrppddm7TtHAfNcIKHXVkbm827/IgLaWip+Nm9mt+W4L0Dyh72XibUxhzw8EjPYWsIzeziTu90pSo9qmBpvY5tbXIty4Kea6TK9kOsbmtiBJdYxhtiNHcT8tEDbs0xvvX/AOdqWPL0LoJnaKJzS0ka9p/omHZ6vZUtOZ4vGNXDeeV7jfolSXZ+Abm8N1zc9o1WmGVUdK85QQyQWNiTYjce7UrZOXH6jY1HkuXRZL2xWILuAvc8TayHY7jwpcgEOYOb1Xt6NrCRoWkucLO3Htv32gU1Rntxvx5hb4hQxTwOZOSGA5gdxa4aBzfMi3auJybf2Z6H6ajG4rZJw3GYah9tzw3NbQjtsRxCkzyFx03JQw6ihpyZIxI7qkZjqLX1tYWG4LrJjbnaMCWUbf1sWE1GP2pBbGqwMba6jYRWtf7oF26Xslevle89Y7ka2SGj/BWxY+PZy5cvJ6CFTXRMJD2i+9QpcQpjva1Qtp3e18AgDnXNlVkbHSOWmLbhrdEdwZ4c3LbTeFXkUlmFWDs3w+BGIGeYpTQu0cEQ3NsN1voguPgi5CLOPU/l+iLChUdRwHifNa4jRRvY25IDdEHoTeRvejWO/cOt2eqRI1gt2Gw5cvSFBpsKfc5SHDgbgfIri+Q23nzXnSu5nzTKjWAlixYrAJdB77Pib6hP5laAM3EH6JAoffZ8TfUJ3rfcPwu+iSYV2SM1KRq1qkQx0otlDQRuskBzzzU3DJDnbqd4U+I3IeqoQyDK+xHauIwakPAIVtMCGAt0N0DjdJvLyPFLxbG5IdKbCoYnF0Z1tzWT4THNYudqBa4KA7PzEyEFxPVKzGal0RGU20utTBaDDNlIRqJD5qRh2DtgD8ri7NzST/1yc6hyO4BVySskzO3blg6CFfsyZ3Fwfa9tFFh2He17XGUWa5rt35SD9FwrMWlidYOTNgXSSQh0v49Q39PC/fv8kJS4oMYcnQZfjbg4dFEZGg6kktBHENI9UxU9FTVDOlZG3re9cDMHDQh3aEChbYaKXh9X0L817NdYPHP9VuY9FKGb7b6Oifx/r9ezat2di19kw9oaB5qk8dpJ4KqVpYXXkcG2aXggm7Gg66gFotvV/wCK1Drtjht0kgOUnUMYPflcOIbcWHEkDiSOdNRNjYIgNBffqSSbuLjxJJJJ5ldiZxFa0WykwijBaA+13WcWm7tSCAbG17eCMx4FPbrPa3s1v6FNhp8vu6jXQ7x3FelpuUwBKqdm5HWsWuI3e9f6LaHYVxF5XNHYxtyO9ztB5eKcjUMi1PHcBvP/ADmoFTO6UWdow/gHH4jvPopZMyiVx4nMVotknB2anqw+34QRfyG7yWlRse+Qe0BzC5vnuNOVymGXDWHVt2OG4tNiCp+G1Lnh0cv3jRcOGmdu4PHaDoe8KWPMpPrZXLhcVaeiv2uDaYi9wGmx7OSXWVQFrGye8Shja4ssALbrWFlEFDTH8LVRM52hNknB4o9sfIC19uaJnBqU/hC6YfQxQ3EYsDrvWsFC5tSPaXvwCDQtTxiGBxVBu4kG3AqPBsfGN0jrLGoWHNGXfxVjbLt+TEFqtjdLskNxwITHg1I6MdbiLIoFA3aB2hU959n/AC/RRcZoHOBs4KTK3qEfp+iz7CkV9QD2jO9GsbHsXeCiwYW5j2uNtDzU3Eoy+Mtbv0So1CVO2zVzuitXhc1vcKjNw+X/AAyjHoDFherF7ZXMSaL32fE31CbsTic5oINrA3+SUKP32/EPUKz8EoRMx1yOAse0JJhRXEgXfDne0b3hWK/Y2I8G+BXkWxEbSC0ajX3klhoWto3vHw6JfE11Z+JbLmVuUg89CELOwNt2f5IJ6DQt7Nu9qfhKj4xM5xGYWtceCc8P2RdE/MA86W3Ljiuyb5SCMzbAjcUAleRHgmjZl4bHKeS7/wDwOQbn/IolhGzb4GvzHQoGIOF0Bqpg4t9m03dfcSNze1PbIctlAwqHKLAWA3eKJSgrlyStnfix8F+Trm0UCuqmtaXHs0G8kmwaBxJOi3kmsg8E3SOEh9wX6Mc+Bk8dQOy54pIoo34h12TYTE579ZSQHG97NaOpG39LQT3m54onVe7fzSvs9ieSdrSerJdnIZt7PmCP5kfxGptoLab+K7sUuUTzs0OMqNHy81FdUBjHPdoAL/0HeVDqsQsLX04dygY5Veya0/idfwZqPG5aqzdKycY26NY6kvdmdvPDgByCIscluCYgEozhswLRfevNlbZ6kVSpE4LmX5XsdycB4O6p9fktnlQKifUDtHqEIumgT2mgJta3rSu5A7khsqHD8R809bUHqyHsKr1ejHo8qXZJbVyX98+aYtnJHSNfmN7aBKOZMeyFRa7fzHeizIlYlWPjkytNtAt6XF5OYQvamQifwCGRVJGqBiwoMTeQjf8AEODRfkqwbjDgRlT5R14kZfs+iNgIeLY4Wg6ItO/qE/pJ+SR8cn4BOVSfZu+A/tSsZCrBjokcG5dSpdXViMZnAWCV8KPtWd6O7QO9kfBLRrPJto48q1btFHbelSq93xXBu5OkCweF61YsVTEil99vxD1Cs/ZwXa7vHosWJJhQcZGurWnt+axYpDHZhPM+ZXdr3cz5rFixjq2V35iujZnc1ixAx6ah3Z5IRida6QiMWy7zbjy8FixSySa0XwRTdnsbcoXr57LFigzsuwDiVT0jjEPdH3h7DqI78zx7O9aSVQHHwWLEfwaO9kKqxHcRva4Ed4II9E9YhVAXN14sXTh9Ob5HaEraPaIRCxG86EHz0UOtx0yzObfqs6jR8JOYntJv8lixUy/tJ4f3BiilGVFqSW9gsWLjR3IIuN1BpoXSThrQTk6zrcAN3zt81ixCC+xHM6TOeM4K+QOGVwzC27+iUptiJBuDvJ39Fixdq0ee9shz7ISDce+6K7OYO6Jrs9r30WLE1moHbRYZI+bM0EiwQs4TL+U/NYsRAdabBJXEBrCSnimwqWCPrscAQTcjTcvFibigWJeJOufFPdUfZu+A/tWLFOXYyK0ous9oG8ovjMTgwHgGgHvWLEDC5UC4UdqxYqIU/9k=",
       "ripetizioni": [
         {"kg": 35, "n_ripetizioni": 10},
         {"kg": 35, "n_ripetizioni": 10},
@@ -522,7 +550,7 @@ const workoutData = {
     },
     "Addome": {
       "Plank": {
-        "img": "https://image.shutterstock.com/image-photo/man-doing-plank-exercise-260nw-1720132610.jpg",
+        "img": "https://fitnessprogramer.com/wp-content/uploads/2021/02/plank.gif",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 60}],
         "recupero": 0,
         "unita": "s",
@@ -530,7 +558,7 @@ const workoutData = {
         "media": []
       },
       "Cable crunch": {
-        "img": "https://image.shutterstock.com/image-photo/man-doing-cable-crunch-exercise-260nw-1918066698.jpg",
+        "img": "https://training.fit/wp-content/uploads/2020/01/kabelzugcrunches-800x448.png",
         "ripetizioni": [
           {"kg": 70, "n_ripetizioni": 15},
           {"kg": 70, "n_ripetizioni": 15},
@@ -545,7 +573,7 @@ const workoutData = {
     "Finisher funzionale 3 giri": {
       "img": "https://image.shutterstock.com/image-photo/functional-training-260nw-1797385988.jpg",
       "Bulgarian split squat": {
-        "img": "https://image.shutterstock.com/image-photo/woman-doing-bulgarian-split-squat-260nw-1765723338.jpg",
+        "img": "https://fitnessprogramer.com/wp-content/uploads/2021/05/Dumbbell-Bulgarian-Split-Squat.gif",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
         "recupero": 30,
         "unita": "s",
@@ -553,7 +581,7 @@ const workoutData = {
         "media": []
       },
       "Kettlebell swing": {
-        "img": "https://image.shutterstock.com/image-photo/man-doing-kettlebell-swings-exercise-260nw-1725140253.jpg",
+        "img": "https://liftmanual.com/wp-content/uploads/2023/04/kettlebell-swing.jpg",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 15}],
         "recupero": 0,
         "unita": "s",
@@ -561,7 +589,7 @@ const workoutData = {
         "media": []
       },
       "Plank to elbow tap": {
-        "img": "https://image.shutterstock.com/image-photo/woman-doing-plank-elbow-tap-260nw-1932729886.jpg",
+        "img": "https://spotebi.com/wp-content/uploads/2016/03/plank-shoulder-tap-exercise-illustration-spotebi.jpg",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 30}],
         "recupero": 0,
         "unita": "s",
@@ -569,7 +597,7 @@ const workoutData = {
         "media": []
       },
       "Jump squat": {
-        "img": "https://image.shutterstock.com/image-photo/woman-doing-jump-squats-260nw-177384034.jpg",
+        "img": "https://liftmanual.com/wp-content/uploads/2023/04/double-jump-squat.jpg",
         "ripetizioni": [{"kg": 0, "n_ripetizioni": 10}],
         "recupero": 30,
         "unita": "s",
