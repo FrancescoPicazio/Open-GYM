@@ -1,97 +1,181 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# GYM App
 
-# Getting Started
+A React Native fitness app to manage daily workout plans, track exercise progress, and run guided circuit/rest timers.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## What this app does
 
-## Step 1: Start Metro
+The app helps users follow a structured training schedule divided by days. It supports:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- Email/password and Google sign-in
+- Loading workout schedules from Firebase/Firestore
+- Viewing daily exercises and exercise details
+- Tracking sets, reps, load, notes, and completion status
+- Running circuit sessions with work/rest phases
+- Running per-set recovery timers in exercise detail
+- Foreground timer notifications on Android with live countdown and a **Stop** action
+- Timer completion alerts with sound/vibration (including while app is backgrounded or device is locked)
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Main user flow
+
+1. User signs in.
+2. App loads the latest workout schedule.
+3. User selects a day and opens an exercise.
+4. User updates set data and marks progress.
+5. User can run:
+   - Circuit timer from the day screen
+   - Recovery timer from exercise sets
+6. App prevents starting multiple timers at the same time and offers to replace an active one.
+
+## Key features
+
+### Authentication
+
+- Firebase Authentication
+- Google Sign-In integration
+- Optional credential persistence (remember me)
+
+### Workout management
+
+- Day-based workout structure
+- Exercise list and detailed exercise editor
+- Set-level completion and day reset
+- Circuit completion tracking
+
+### Timer system (Android)
+
+- Foreground service timer for reliable countdown
+- Persistent notification with remaining time
+- Notification action to stop timer
+- Works when app is closed/backgrounded
+- Audio/vibration alert at timer completion
+
+## Tech stack
+
+- React Native 0.84
+- TypeScript
+- Firebase (`@react-native-firebase/app`, `auth`, `firestore`)
+- Google Sign-In (`@react-native-google-signin/google-signin`)
+- AsyncStorage
+- Native Android foreground service (Kotlin)
+
+## Project structure
+
+- `src/components/` UI screens and workout flows
+- `src/api/` Firebase access and timer bridge modules
+- `src/types/` workout domain types
+- `android/` native Android service and notification implementation
+- `ios/` iOS project files
+
+## Getting started
+
+### Prerequisites
+
+- Node.js (see `package.json` engines)
+- React Native environment configured
+- Android Studio + SDK
+- Java/JDK compatible with your RN setup
+- Firebase project configured for Android/iOS
+
+### Install dependencies
 
 ```sh
-# Using npm
+npm install
+```
+
+### Start Metro
+
+```sh
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+### Run on Android
 
 ```sh
-# Using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+### Run on iOS
 
 ```sh
 bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
 bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Configurations
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### 1) Firebase keys and app config
 
-## Step 3: Modify your app
+Set up Firebase for both platforms before running authentication and Firestore features.
 
-Now that you have successfully run the app, let's make changes!
+- Android:
+  - Place your Firebase Android config file at `android/app/google-services.json`
+  - Ensure your Android app package matches `com.gym` (or update `applicationId` in `android/app/build.gradle`)
+- iOS:
+  - Place your Firebase iOS config file at `ios/GYM/GoogleService-Info.plist`
+  - Make sure it is included in the Xcode target
+- Google Sign-In:
+  - Configure SHA certificates in Firebase console (Android)
+  - Configure OAuth client IDs in Google/Firebase
+  - Set the correct Web Client ID in `src/components/login_page.tsx`
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### 2) Firestore database structure (template)
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+Use a structure compatible with the app domain.
+Below is a template you can fill with your final model.
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+```text
+schede (collection)
+   {scheduleId} (document)
+         day_1:
+            giorno: number
+            esercizi: array
+               - nome: string
+                  immagine: string | null
+                  note: string
+                  done: boolean
+                  serie: array
+                     - ripetizioni: number | string | null
+                        carico: number | null
+                        recupero: number | string | null
+                        done: boolean
+            circuito:
+               round: number
+               durata_esercizio: string | null
+               recupero: string | null
+               done: boolean
+               esercizi: array
+                  - nome: string
+                     immagine: string | null
+                     note: string
+```
 
-## Congratulations! :tada:
+Notes:
 
-You've successfully run and modified your React Native App. :partying_face:
+- Keep field names aligned with app types in `src/types/workout.ts`
+- Ensure `days` keys match expected values (`day_1`, `day_2`, ...)
+- Update `src/api/workout_repository.ts` if you change field names or nesting
 
-### Now what?
+## Android permissions used
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- `INTERNET`
+- `VIBRATE`
+- `FOREGROUND_SERVICE`
+- `FOREGROUND_SERVICE_DATA_SYNC`
+- `POST_NOTIFICATIONS` (Android 13+)
 
-# Troubleshooting
+## Notes
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- Timer reliability and persistent timer notifications are implemented on Android via native foreground service.
+- Notification small icon uses Android status-bar icon resources (`drawable-* / ic_stat_name`).
+- If you change notification channels or icon behavior, reinstalling the app may be required on some devices.
 
-# Learn More
+## Scripts
 
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- `npm run android` – build and run Android app
+- `npm run android:release` – build release APK (Hermes disabled for Windows build compatibility)
+- `npm run android:aab` – build release AAB (Hermes disabled for Windows build compatibility)
+- `npm run ios` – build and run iOS app
+- `npm start` – start Metro
+- `npm run lint` – lint code
+- `npm test` – run tests
