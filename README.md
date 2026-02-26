@@ -2,6 +2,8 @@
 
 A React Native fitness app to manage daily workout plans, track exercise progress, and run guided circuit/rest timers.
 
+![alt text](https://github.com/FrancescoPicazio/Open-GYM/blob/main/images/showcase.png?raw=true)
+
 ## What this app does
 
 The app helps users follow a structured training schedule divided by days. It supports:
@@ -123,7 +125,7 @@ Set up Firebase for both platforms before running authentication and Firestore f
 
 Use a structure compatible with the app domain.
 Below is a template you can fill with your final model.
-
+The application read the documents day_1, day_2 and day_3
 ```text
 schede (collection)
    {scheduleId} (document)
@@ -139,6 +141,7 @@ schede (collection)
                         carico: number | null
                         recupero: number | string | null
                         done: boolean
+                  ...
             circuito:
                round: number
                durata_esercizio: string | null
@@ -148,6 +151,7 @@ schede (collection)
                   - nome: string
                      immagine: string | null
                      note: string
+               ...
 ```
 
 Notes:
