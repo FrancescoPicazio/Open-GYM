@@ -26,10 +26,12 @@ import {
   stopForegroundTimer,
   subscribeForegroundTimerEvents,
 } from "../api/foreground_timer";
+import { StopRequestReason, resolveStoppedTimerState } from "./circuit_timer_logic";
 import { Circuito, Esercizio, GiornoAllenamento } from "../types/workout";
 import { ExerciseCard, ExerciseDetail } from "./exercise_card";
 import GymCard from "./gym_card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import KeepAwake from "react-native-keep-awake";
 
 const LOGIN_STORAGE_KEY = "gym_login_credentials";
 
@@ -582,7 +584,12 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
   const [remaining, setRemaining] = useState<number>(0);
   const [isPaused, setIsPaused] = useState(false);
   const mountedRef = useRef(true);
-  const pauseRequestRef = useRef(false);
+  const remainingRef = useRef(0);
+  const stopRequestReasonRef = useRef<StopRequestReason>(null);
+
+  useEffect(() => {
+    remainingRef.current = remaining;
+  }, [remaining]);
 
   const exercises = circuito.esercizi ?? [];
   const totalRounds = circuito.round > 0 ? circuito.round : 1;
@@ -594,8 +601,10 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
     const validDuration = duration > 0 ? duration : 1;
 
     try {
+      stopRequestReasonRef.current = "navigation";
       await stopForegroundTimer();
     } catch {
+      stopRequestReasonRef.current = null;
     }
 
     setPhase(nextPhase);
@@ -688,15 +697,13 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
       }
 
       if (event.status === "stopped") {
-        if (pauseRequestRef.current) {
-          pauseRequestRef.current = false;
-          setIsPaused(true);
-          setRemaining((prev) => (prev > 0 ? prev : 1));
-          return;
-        }
-
-        setIsPaused(true);
-        setRemaining(0);
+        const nextState = resolveStoppedTimerState(
+          stopRequestReasonRef.current,
+          remainingRef.current,
+        );
+        stopRequestReasonRef.current = null;
+        setIsPaused(nextState.isPaused);
+        setRemaining(nextState.remainingSeconds);
         return;
       }
 
@@ -726,51 +733,66 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
 
   const currentExercise = exercises[exerciseIndex] ?? null;
   const nextExercise = exercises[exerciseIndex + 1] ?? null;
+  const shouldKeepScreenAwake = !isPaused && remaining > 0;
 
-  const togglePause = async () => {
-    if (remaining <= 0) return;
-
-    if (isPaused) {
-      const label = phase === "work" ? "Circuito • Esercizio" : "Circuito • Recupero";
-      try {
-        await startForegroundTimer(label, remaining);
-        setIsPaused(false);
-      } catch (error: any) {
-        if (String(error?.code ?? "") === "TIMER_ALREADY_RUNNING") {
-          Alert.alert(
-            "Timer attivo",
-            "C'è già un timer in esecuzione.",
-            [
-              { text: "Annulla", style: "cancel" },
-              {
-                text: "Cancella vecchio timer",
-                style: "destructive",
-                onPress: () => {
-                  startForegroundTimer(label, remaining, true)
-                    .then(() => setIsPaused(false))
-                    .catch(() => {
-                      Alert.alert("Errore timer", "Impossibile avviare il nuovo timer.");
-                    });
-                },
-              },
-            ],
-          );
-        } else {
-          Alert.alert("Errore timer", "Impossibile riprendere il timer.");
-        }
-      }
+  useEffect(() => {
+    if (!shouldKeepScreenAwake) {
+      KeepAwake.deactivate();
       return;
     }
 
+    KeepAwake.activate();
+
+    return () => {
+      KeepAwake.deactivate();
+    };
+  }, [shouldKeepScreenAwake]);
+
+  const pauseTimerByTap = async () => {
+    if (remaining <= 0 || isPaused) return;
+
     try {
-      pauseRequestRef.current = true;
+      stopRequestReasonRef.current = "pause";
       await stopForegroundTimer();
     } catch {
-      pauseRequestRef.current = false;
+      stopRequestReasonRef.current = null;
     }
 
     setRemaining((prev) => (prev > 0 ? prev : 1));
     setIsPaused(true);
+  };
+
+  const resumeTimer = async () => {
+    if (remaining <= 0 || !isPaused) return;
+
+    const label = phase === "work" ? "Circuito • Esercizio" : "Circuito • Recupero";
+    try {
+      await startForegroundTimer(label, remaining);
+      setIsPaused(false);
+    } catch (error: any) {
+      if (String(error?.code ?? "") === "TIMER_ALREADY_RUNNING") {
+        Alert.alert(
+          "Timer attivo",
+          "C'è già un timer in esecuzione.",
+          [
+            { text: "Annulla", style: "cancel" },
+            {
+              text: "Cancella vecchio timer",
+              style: "destructive",
+              onPress: () => {
+                startForegroundTimer(label, remaining, true)
+                  .then(() => setIsPaused(false))
+                  .catch(() => {
+                    Alert.alert("Errore timer", "Impossibile avviare il nuovo timer.");
+                  });
+              },
+            },
+          ],
+        );
+      } else {
+        Alert.alert("Errore timer", "Impossibile riprendere il timer.");
+      }
+    }
   };
 
   const goToPreviousExercise = () => {
@@ -778,7 +800,6 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
     if (exerciseIndex <= 0) return;
 
     setExerciseIndex((prev) => prev - 1);
-    stopForegroundTimer().catch(() => undefined);
     setPhaseTimer("work", true);
   };
 
@@ -787,7 +808,6 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
     if (exerciseIndex >= exercises.length - 1) return;
 
     setExerciseIndex((prev) => prev + 1);
-    stopForegroundTimer().catch(() => undefined);
     setPhaseTimer("work", true);
   };
 
@@ -795,8 +815,13 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
     <View style={styles.circuitSessionContainer}>
       <View style={styles.circuitSessionHeader}>
         <TouchableOpacity
-          onPress={() => {
-            stopForegroundTimer().catch(() => undefined);
+          onPress={async () => {
+            try {
+              stopRequestReasonRef.current = "navigation";
+              await stopForegroundTimer();
+            } catch {
+              stopRequestReasonRef.current = null;
+            }
             onBack();
           }}
         >
@@ -843,12 +868,18 @@ function CircuitSessionView({ dayLabel, circuito, onBack, onComplete }: Readonly
           styles.circuitTimer,
           phase === "rest" ? styles.circuitTimerRest : styles.circuitTimerWork,
         ]}
-        onPress={togglePause}
+        onPress={pauseTimerByTap}
       >
         <Text style={styles.circuitTimerLabel}>{phase === "work" ? "Durata" : "Recupero"}</Text>
         <Text style={styles.circuitTimerValue}>{remaining}s</Text>
-        <Text style={styles.circuitTimerHint}>{isPaused ? "In pausa • tap per riprendere" : "Tap per pausa"}</Text>
+        <Text style={styles.circuitTimerHint}>{isPaused ? "In pausa" : "Tap per pausa"}</Text>
       </TouchableOpacity>
+
+      {isPaused && remaining > 0 ? (
+        <TouchableOpacity style={styles.resumeTimerButton} onPress={resumeTimer}>
+          <Text style={styles.resumeTimerButtonText}>Riprendi timer</Text>
+        </TouchableOpacity>
+      ) : null}
 
       <View style={styles.circuitNavRow}>
         <TouchableOpacity
@@ -1094,6 +1125,16 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     fontSize: 12,
     fontWeight: "600",
+  },
+  resumeTimerButton: {
+    backgroundColor: "#4C6FFF",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  resumeTimerButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
   },
   circuitNavRow: {
     flexDirection: "row",
