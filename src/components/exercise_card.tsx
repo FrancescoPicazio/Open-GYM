@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Alert,
@@ -23,10 +24,19 @@ type ExerciseCardProps = {
 
 type ExerciseDetailProps = {
 	dayLabel: string;
+	exerciseKey: string;
 	exercise: Esercizio;
 	onBack: () => void;
 	onChange: (exercise: Esercizio) => void;
 	onToggleDone: () => void;
+};
+
+const ACTIVE_SERIES_TIMER_STORAGE_KEY = "active_series_timer";
+
+type StoredSeriesTimer = {
+	exerciseKey: string;
+	seriesIndex: number;
+	endAt: number;
 };
 
 function parseMaybeNumber(value: string): number | string | null {
@@ -78,6 +88,7 @@ export function ExerciseCard({
 
 export function ExerciseDetail({
 	dayLabel,
+	exerciseKey,
 	exercise,
 	onBack,
 	onChange,
@@ -179,6 +190,8 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "finished") {
+				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch(() => {
+				});
 				setSeriesTimers((prev) => ({
 					...prev,
 					[activeSeriesIndex]: {
@@ -193,6 +206,8 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "stopped") {
+				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch(() => {
+				});
 				setSeriesTimers((prev) => ({
 					...prev,
 					[activeSeriesIndex]: {
@@ -205,23 +220,80 @@ export function ExerciseDetail({
 			}
 		});
 
-		getForegroundTimerState().catch(() => {
-		});
+		(async () => {
+			try {
+				const [storedTimerRaw, nativeState] = await Promise.all([
+					AsyncStorage.getItem(ACTIVE_SERIES_TIMER_STORAGE_KEY),
+					getForegroundTimerState(),
+				]);
+
+				if (!storedTimerRaw) return;
+
+				const storedTimer = JSON.parse(storedTimerRaw) as StoredSeriesTimer;
+				if (storedTimer.exerciseKey !== exerciseKey) return;
+
+				const remainingSeconds = Math.max(
+					0,
+					Math.ceil((storedTimer.endAt - Date.now()) / 1000),
+				);
+
+				if (remainingSeconds <= 0) {
+					await AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY);
+					setSeriesTimers((prev) => ({
+						...prev,
+						[storedTimer.seriesIndex]: {
+							endAt: null,
+							remaining: null,
+							completed: true,
+						},
+					}));
+					markSeriesDoneAndCommit(storedTimer.seriesIndex);
+					return;
+				}
+
+				const expectedLabel = `Serie #${storedTimer.seriesIndex + 1}`;
+				if (!nativeState.running || nativeState.label !== expectedLabel) {
+					await AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY);
+					return;
+				}
+
+				activeSeriesTimerRef.current = storedTimer.seriesIndex;
+				setSeriesTimers((prev) => ({
+					...prev,
+					[storedTimer.seriesIndex]: {
+						endAt: storedTimer.endAt,
+						remaining: nativeState.remainingSeconds,
+						completed: false,
+					},
+				}));
+			} catch {
+			}
+		})();
 
 		return () => {
 			subscription.remove();
 		};
-	}, [markSeriesDoneAndCommit]);
+	}, [exerciseKey, markSeriesDoneAndCommit]);
 
 	const startSeriesTimer = async (serieIndex: number, recoverySeconds: number) => {
 		if (recoverySeconds <= 0) return;
 
 		const applyStartedState = () => {
+			const endAt = Date.now() + recoverySeconds * 1000;
 			activeSeriesTimerRef.current = serieIndex;
 			setSeriesTimers((prev) => ({
 				...prev,
-				[serieIndex]: { endAt: null, remaining: recoverySeconds, completed: false },
+				[serieIndex]: { endAt, remaining: recoverySeconds, completed: false },
 			}));
+			AsyncStorage.setItem(
+				ACTIVE_SERIES_TIMER_STORAGE_KEY,
+				JSON.stringify({
+					exerciseKey,
+					seriesIndex: serieIndex,
+					endAt,
+				} satisfies StoredSeriesTimer),
+			).catch(() => {
+			});
 		};
 
 		const replaceExistingTimer = () => {

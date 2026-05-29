@@ -8,8 +8,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.RingtoneManager
 import android.media.ToneGenerator
 import android.os.Build
 import android.os.Handler
@@ -250,8 +248,9 @@ class ForegroundTimerService : Service() {
       .setContentText("Timer completato")
       .setPriority(NotificationCompat.PRIORITY_HIGH)
       .setAutoCancel(true)
+      .setOnlyAlertOnce(true)
+      .setSilent(true)
       .setContentIntent(contentPendingIntent)
-      .setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
       .build()
 
     NotificationManagerCompat.from(this)
@@ -276,59 +275,20 @@ class ForegroundTimerService : Service() {
       "Timer Allenamento - Fine",
       NotificationManager.IMPORTANCE_HIGH,
     ).apply {
-      description = "Notifica sonora alla fine del timer"
-      enableVibration(true)
-      val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-      val audioAttributes = android.media.AudioAttributes.Builder()
-        .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-        .build()
-      setSound(soundUri, audioAttributes)
+      description = "Notifica silenziosa alla fine del timer"
+      enableVibration(false)
+      setSound(null, null)
     }
     notificationManager.createNotificationChannel(finishChannel)
   }
 
   private fun playAlarm() {
-    val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-      ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
     try {
-      val ringtone = RingtoneManager.getRingtone(applicationContext, alarmUri)
-      ringtone?.play()
-    } catch (_: Exception) {
-    }
-
-    try {
-      if (alarmUri != null) {
-        val player = MediaPlayer().apply {
-          setAudioStreamType(AudioManager.STREAM_ALARM)
-          setDataSource(applicationContext, alarmUri)
-          isLooping = false
-          setOnPreparedListener { it.start() }
-          setOnCompletionListener { it.release() }
-          prepareAsync()
-        }
-
-        handler.postDelayed({
-          try {
-            player.release()
-          } catch (_: Exception) {
-          }
-        }, 4000)
-      }
-    } catch (_: Exception) {
-    }
-
-    try {
-      val toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
-      toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500)
-      handler.postDelayed({
-        toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500)
-      }, 650)
+      val toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
+      toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 180)
       handler.postDelayed({
         toneGenerator.release()
-      }, 1400)
+      }, 250)
     } catch (_: Exception) {
     }
   }
