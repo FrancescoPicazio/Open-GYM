@@ -28,12 +28,18 @@ class ForegroundTimerModule(private val reactContext: ReactApplicationContext) :
       return
     }
 
-    val started = ForegroundTimerService.startTimer(
-      reactApplicationContext,
-      label,
-      seconds,
-      forceReplace,
-    )
+    val started = try {
+      ForegroundTimerService.startTimer(
+        reactApplicationContext,
+        label,
+        seconds,
+        forceReplace,
+      )
+    } catch (error: Exception) {
+      val details = error.message ?: error.toString()
+      promise.reject("TIMER_START_FAILED", "Impossibile avviare il timer: $details", error)
+      return
+    }
     if (!started) {
       promise.reject("TIMER_ALREADY_RUNNING", "Un timer è già in esecuzione")
       return
@@ -44,7 +50,13 @@ class ForegroundTimerModule(private val reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun stopTimer(promise: Promise) {
-    ForegroundTimerService.stopTimer(reactApplicationContext)
+    try {
+      ForegroundTimerService.stopTimer(reactApplicationContext)
+    } catch (error: Exception) {
+      val details = error.message ?: error.toString()
+      promise.reject("TIMER_STOP_FAILED", "Impossibile fermare il timer: $details", error)
+      return
+    }
     promise.resolve(createStateMap())
   }
 
