@@ -286,8 +286,13 @@ class ForegroundTimerService : Service() {
     try {
       toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
       toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 180)
+      val toneGeneratorToRelease = toneGenerator
+      toneGenerator = null
       handler.postDelayed({
-        toneGenerator.release()
+        try {
+          toneGeneratorToRelease.release()
+        } catch (_: Exception) {
+        }
       }, 250)
     } catch (_: Exception) {
       try {

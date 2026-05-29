@@ -36,7 +36,7 @@ class ForegroundTimerModule(private val reactContext: ReactApplicationContext) :
         forceReplace,
       )
     } catch (error: Exception) {
-      val details = error.message ?: error.javaClass.simpleName
+      val details = error.message ?: error.toString()
       promise.reject("TIMER_START_FAILED", "Impossibile avviare il timer: $details", error)
       return
     }
@@ -53,7 +53,7 @@ class ForegroundTimerModule(private val reactContext: ReactApplicationContext) :
     try {
       ForegroundTimerService.stopTimer(reactApplicationContext)
     } catch (error: Exception) {
-      val details = error.message ?: error.javaClass.simpleName
+      val details = error.message ?: error.toString()
       promise.reject("TIMER_STOP_FAILED", "Impossibile fermare il timer: $details", error)
       return
     }
