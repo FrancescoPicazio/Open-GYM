@@ -171,6 +171,12 @@ export function ExerciseDetail({
 		onChange(draftRef.current);
 	};
 
+	const clearStoredSeriesTimer = useCallback(() => {
+		AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch((error) => {
+			console.warn("Failed to clear active series timer state", error);
+		});
+	}, []);
+
 	useEffect(() => {
 		const subscription = subscribeForegroundTimerEvents((event) => {
 			const activeSeriesIndex = activeSeriesTimerRef.current;
@@ -190,9 +196,7 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "finished") {
-				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch((error) => {
-					console.warn("Failed to clear active series timer state", error);
-				});
+				clearStoredSeriesTimer();
 				setSeriesTimers((prev) => ({
 					...prev,
 					[activeSeriesIndex]: {
@@ -207,9 +211,7 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "stopped") {
-				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch((error) => {
-					console.warn("Failed to clear active series timer state", error);
-				});
+				clearStoredSeriesTimer();
 				setSeriesTimers((prev) => ({
 					...prev,
 					[activeSeriesIndex]: {
@@ -283,23 +285,23 @@ export function ExerciseDetail({
 		return () => {
 			subscription.remove();
 		};
-	}, [exerciseKey, markSeriesDoneAndCommit]);
+	}, [clearStoredSeriesTimer, exerciseKey, markSeriesDoneAndCommit]);
 
-	const startSeriesTimer = async (serieIndex: number, recoverySeconds: number) => {
+	const startSeriesTimer = async (seriesIndex: number, recoverySeconds: number) => {
 		if (recoverySeconds <= 0) return;
 
 		const applyStartedState = () => {
 			const endAt = Date.now() + recoverySeconds * 1000;
-			activeSeriesTimerRef.current = serieIndex;
+			activeSeriesTimerRef.current = seriesIndex;
 			setSeriesTimers((prev) => ({
 				...prev,
-				[serieIndex]: { endAt, remaining: recoverySeconds, completed: false },
+				[seriesIndex]: { endAt, remaining: recoverySeconds, completed: false },
 			}));
 			AsyncStorage.setItem(
 				ACTIVE_SERIES_TIMER_STORAGE_KEY,
 				JSON.stringify({
 					exerciseKey,
-					seriesIndex: serieIndex,
+					seriesIndex,
 					endAt,
 				} satisfies StoredSeriesTimer),
 			).catch((error) => {
@@ -310,7 +312,7 @@ export function ExerciseDetail({
 		const replaceExistingTimer = () => {
 			(async () => {
 				try {
-					await startForegroundTimer(`Serie #${serieIndex + 1}`, recoverySeconds, true);
+					await startForegroundTimer(`Serie #${seriesIndex + 1}`, recoverySeconds, true);
 					applyStartedState();
 				} catch {
 					Alert.alert("Errore timer", "Impossibile avviare il nuovo timer.");
@@ -319,7 +321,7 @@ export function ExerciseDetail({
 		};
 
 		try {
-			await startForegroundTimer(`Serie #${serieIndex + 1}`, recoverySeconds);
+			await startForegroundTimer(`Serie #${seriesIndex + 1}`, recoverySeconds);
 			applyStartedState();
 		} catch (error: any) {
 			if (String(error?.code ?? "") === "TIMER_ALREADY_RUNNING") {

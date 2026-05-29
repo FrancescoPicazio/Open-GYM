@@ -282,13 +282,18 @@ class ForegroundTimerService : Service() {
   }
 
   private fun playAlarm() {
+    var toneGenerator: ToneGenerator? = null
     try {
-      val toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
+      toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
       toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 180)
       handler.postDelayed({
         toneGenerator.release()
       }, 250)
     } catch (_: Exception) {
+      try {
+        toneGenerator?.release()
+      } catch (_: Exception) {
+      }
     }
   }
 
