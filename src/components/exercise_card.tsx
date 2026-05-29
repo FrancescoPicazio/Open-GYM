@@ -231,7 +231,14 @@ export function ExerciseDetail({
 
 				if (!storedTimerRaw) return;
 
-				const storedTimer = JSON.parse(storedTimerRaw) as StoredSeriesTimer;
+				let storedTimer: StoredSeriesTimer;
+				try {
+					storedTimer = JSON.parse(storedTimerRaw) as StoredSeriesTimer;
+				} catch (error) {
+					console.warn("Failed to parse active series timer state", error);
+					await AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY);
+					return;
+				}
 				if (storedTimer.exerciseKey !== exerciseKey) return;
 
 				const remainingSeconds = Math.max(
@@ -254,7 +261,7 @@ export function ExerciseDetail({
 				}
 
 				const expectedLabel = `Serie #${storedTimer.seriesIndex + 1}`;
-				if (!nativeState.running || nativeState.label !== expectedLabel) {
+				if (!nativeState || !nativeState.running || nativeState.label !== expectedLabel) {
 					await AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY);
 					return;
 				}

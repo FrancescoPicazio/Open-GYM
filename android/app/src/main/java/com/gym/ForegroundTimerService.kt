@@ -248,7 +248,6 @@ class ForegroundTimerService : Service() {
       .setContentText("Timer completato")
       .setPriority(NotificationCompat.PRIORITY_HIGH)
       .setAutoCancel(true)
-      .setOnlyAlertOnce(true)
       .setSilent(true)
       .setContentIntent(contentPendingIntent)
       .build()
