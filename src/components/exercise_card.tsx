@@ -190,8 +190,8 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "finished") {
-				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch(error => {
-				  console.warn('Failed to clear active series timer state', error);
+				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch((error) => {
+					console.warn("Failed to clear active series timer state", error);
 				});
 				setSeriesTimers((prev) => ({
 					...prev,
@@ -207,8 +207,8 @@ export function ExerciseDetail({
 			}
 
 			if (event.status === "stopped") {
-				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch(error => {
-				  console.warn('Failed to clear active series timer state', error);
+				AsyncStorage.removeItem(ACTIVE_SERIES_TIMER_STORAGE_KEY).catch((error) => {
+					console.warn("Failed to clear active series timer state", error);
 				});
 				setSeriesTimers((prev) => ({
 					...prev,
@@ -269,7 +269,7 @@ export function ExerciseDetail({
 					},
 				}));
 			} catch (error) {
-			  console.warn('Failed to restore active series timer state', error);
+				console.warn("Failed to restore active series timer state", error);
 			}
 		})();
 
@@ -295,8 +295,8 @@ export function ExerciseDetail({
 					seriesIndex: serieIndex,
 					endAt,
 				} satisfies StoredSeriesTimer),
-			).catch(error => {
-			  console.warn('Failed to persist active series timer state', error);
+			).catch((error) => {
+				console.warn("Failed to persist active series timer state", error);
 			});
 		};
 

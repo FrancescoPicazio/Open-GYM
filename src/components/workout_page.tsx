@@ -471,11 +471,13 @@ function WorkoutDayView({
   }
 
   if (selectedExercise) {
+    const exerciseKey = `${selectedDay ?? "day"}:${selectedExerciseIndex as number}`;
+
     return (
       <View style={styles.section}>
         <ExerciseDetail
           dayLabel={dayLabel}
-          exerciseKey={`${selectedDay ?? "day"}:${selectedExerciseIndex}`}
+          exerciseKey={exerciseKey}
           exercise={selectedExercise}
           onBack={() => onSelectExerciseIndex(null)}
           onChange={(updated) => onUpdateExercise(selectedExerciseIndex as number, updated)}
